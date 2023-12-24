@@ -1,9 +1,10 @@
 from os.path import join
+from random import randint
 
 from PySide6.QtCore import (Qt, QRect)
 from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QMainWindow, QLabel, QPushButton, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
-                               QLineEdit, QFrame, QSizePolicy)
+                               QLineEdit, QFrame, QSizePolicy, QGroupBox, QCheckBox, QRadioButton, QButtonGroup)
 
 import yaml
 
@@ -58,6 +59,13 @@ class BButton(QPushButton):
             self.setEnabled(False)
 
 
+class RButton(QRadioButton):
+    def __init__(self, read_only=False):
+        super().__init__()
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        if read_only:
+            self.setEnabled(False)
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -95,7 +103,7 @@ class MainWindow(QMainWindow):
         money_text = NText('- -')
         money_text.setAlignment(Qt.AlignCenter)
 
-        info_layout.addWidget(NText(i18n['operate']['money']), 0, 7, 1, 3)
+        info_layout.addWidget(NText(i18n['operate']['money']), 1, 7, 1, 3)
         info_layout.addWidget(money_text, 1, 8, 2, 1)
         info_layout.addWidget(NText('CNY'), 2, 9)
 
@@ -115,19 +123,73 @@ class MainWindow(QMainWindow):
         info_widget = QWidget()
         info_widget.setLayout(info_layout)
 
-        operate_layout = QHBoxLayout()
-        operate_layout.setSpacing(5)
-        operate_layout.setContentsMargins(0, 0, 0, 0)
-        operate_layout.addWidget(Color('blue'), 1)
-        operate_layout.addWidget(Color('blue'), 2)
-        operate_widget = QWidget()
-        operate_widget.setLayout(operate_layout)
+        modify_button = RButton()  # 修改信息
+        modify_button.setText(i18n['operate']['modify_info'][0])
+        modify_button.clicked.connect(lambda: print(12))
+        money_plus_button = RButton()  # 储值
+        money_plus_button.setText(i18n['operate']['money_plus'][0])
+        money_plus_button.clicked.connect(lambda: print(14))
+        money_down_button = RButton()  # 消费
+        money_down_button.setText(i18n['operate']['money_down'][0])
+        money_down_button.clicked.connect(lambda: print(15))
+        operate_button_group = QButtonGroup()
+        operate_button_group.setExclusive(True)
+        operate_button_group.addButton(modify_button)
+        operate_button_group.addButton(money_plus_button)
+        operate_button_group.addButton(money_down_button)
+
+        operate_layout = QGridLayout()
+        operate_layout.addWidget(modify_button, 0, 0, 1, 2)
+        operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21)), 0, 5)
+        operate_layout.addWidget(money_plus_button, 2, 0, 1, 2)
+        operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(21)), 3, 5)
+        operate_layout.addWidget(money_down_button, 5, 0, 1, 2)
+        operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(21)), 7, 5)
+
+        operate_layout.addWidget(Color('blue'), 1, 1)
+        operate_layout.addWidget(Color('blue'), 3, 1)
+        operate_layout.addWidget(Color('blue'), 4, 1)
+        operate_layout.addWidget(Color('blue'), 6, 1)
+        operate_layout.addWidget(Color('blue'), 7, 1)
+        operate_layout.addWidget(Color('green'), 1, 3)
+        operate_layout.addWidget(Color('green'), 3, 3)
+        operate_layout.addWidget(Color('green'), 4, 3)
+        operate_layout.addWidget(Color('green'), 6, 3)
+        operate_layout.addWidget(Color('green'), 7, 3)
+
+        operate_layout.setColumnStretch(0, 1)
+        operate_layout.setColumnStretch(1, 8)
+        operate_layout.setColumnStretch(2, 4)
+        operate_layout.setColumnStretch(3, 4)
+        operate_layout.setColumnStretch(4, 5)
+        operate_layout.setRowStretch(0, 1)
+        operate_layout.setRowStretch(1, 1)
+        operate_layout.setRowStretch(2, 1)
+        operate_layout.setRowStretch(3, 1)
+        operate_layout.setRowStretch(4, 1)
+        operate_layout.setRowStretch(5, 1)
+        operate_layout.setRowStretch(6, 1)
+        operate_layout.setRowStretch(7, 1)
+
+        operate_layout.setSpacing(0)
+        operate_layout.setContentsMargins(35, 25, 35, 25)
+        operate_gbox = QGroupBox()
+        operate_gbox.setLayout(operate_layout)
+        operate_gbox.setTitle(i18n['operate']['gbox'])
+
+        down_layout = QHBoxLayout()  # 分隔最近明细和操作区域
+        down_layout.setSpacing(15)
+        down_layout.setContentsMargins(0, 0, 0, 0)
+        down_layout.addWidget(Color('blue'), 1)
+        down_layout.addWidget(operate_gbox, 2)
+        down_widget = QWidget()
+        down_widget.setLayout(down_layout)
 
         gc_layout = QVBoxLayout()  # 分隔操作区上下
         gc_layout.setSpacing(10)
-        gc_layout.setContentsMargins(15, 15, 15, 15)
+        gc_layout.setContentsMargins(50, 25, 50, 25)
         gc_layout.addWidget(info_widget, 1)
-        gc_layout.addWidget(operate_widget, 3)
+        gc_layout.addWidget(down_widget, 3)
         gc_widget = QWidget()
         gc_widget.setLayout(gc_layout)
 
