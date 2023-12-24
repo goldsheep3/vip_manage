@@ -1,0 +1,12 @@
+operate:
+  title: VIP会员管理系统
+
+  phone_number: 手机号码：
+  name: 姓名：
+  wechat: 微信：
+  card_id: 卡号：
+  birthday: 生日：
+  money: 储值：
+
+  search: 搜索
+  exit: 退出
