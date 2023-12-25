@@ -1,12 +1,12 @@
 from os.path import join
-from random import randint
-
-from PySide6.QtCore import (Qt, QRect)
-from PySide6.QtGui import QPalette, QColor
-from PySide6.QtWidgets import (QMainWindow, QLabel, QPushButton, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
-                               QLineEdit, QFrame, QSizePolicy, QGroupBox, QCheckBox, QRadioButton, QButtonGroup)
 
 import yaml
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPalette, QColor
+from PySide6.QtWidgets import (QMainWindow, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
+                               QGroupBox, QButtonGroup)
+
+from ui.e_pyside import *
 
 
 def read_yaml(language_file):
@@ -33,43 +33,10 @@ class Color(QWidget):
         self.setPalette(palette)
 
 
-class NText(QLabel):
-    def __init__(self, text):
-        super().__init__(text)
-
-
-class CLEdit(QLineEdit):
-    def __init__(self, read_only=False, text=''):
-        super().__init__()
-        self.setContentsMargins(0, 5, 0, 5)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.setText(text)
-        if read_only:
-            self.setReadOnly(True)
-
-
-class BButton(QPushButton):
-    def __init__(self, text, function, read_only=False):
-        super().__init__()
-        self.setText(text)
-        self.clicked.connect(function)
-        self.setContentsMargins(5, 5, 5, 5)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        if read_only:
-            self.setEnabled(False)
-
-
-class RButton(QRadioButton):
-    def __init__(self, read_only=False):
-        super().__init__()
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        if read_only:
-            self.setEnabled(False)
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setGeometry(300, 300, 800, 600)
+        self.setGeometry(550, 250, 600, 450)
         self.setMinimumSize(600, 450)
         config = read_yaml('config.yaml')
         i18n = read_yaml(join('i18n', config.get('language', 'zh-CN') + '.yaml'))
@@ -84,23 +51,22 @@ class MainWindow(QMainWindow):
         phone_input.setContentsMargins(0, 5, 10, 5)
         info_layout.addWidget(phone_input, 0, 1, 1, 3)
         info_layout.addWidget(NText(i18n['operate']['name']), 1, 0)
-        name_show = CLEdit(True, '- -')
+        name_show = CLEdit(True, '...')
         info_layout.addWidget(name_show, 1, 1)
         info_layout.addWidget(NText(i18n['operate']['wechat']), 2, 0)
-        wechat_show = CLEdit(True, '- -')
+        wechat_show = CLEdit(True, '...')
         info_layout.addWidget(wechat_show, 2, 1)
 
-        # info_layout.addWidget(Color('cyan'), 0, 3)
         info_layout.addWidget(BButton(i18n['operate']['search'], lambda: print(1)), 0, 4)
         info_layout.addWidget(BButton(i18n['operate']['exit'], lambda: print(2)), 0, 5)
         info_layout.addWidget(NText(i18n['operate']['card_id']), 1, 3)
-        card_id_show = CLEdit(True, '- -')
+        card_id_show = CLEdit(True, '...')
         info_layout.addWidget(card_id_show, 1, 4, 1, 2)
         info_layout.addWidget(NText(i18n['operate']['birthday']), 2, 3)
-        birthday_show = CLEdit(True, '- -')
+        birthday_show = CLEdit(True, '...')
         info_layout.addWidget(birthday_show, 2, 4, 1, 2)
 
-        money_text = NText('- -')
+        money_text = NText('...')
         money_text.setAlignment(Qt.AlignCenter)
 
         info_layout.addWidget(NText(i18n['operate']['money']), 1, 7, 1, 3)
@@ -139,29 +105,28 @@ class MainWindow(QMainWindow):
         operate_button_group.addButton(money_down_button)
 
         operate_layout = QGridLayout()
-        operate_layout.addWidget(modify_button, 0, 0, 1, 2)
-        operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21)), 0, 5)
-        operate_layout.addWidget(money_plus_button, 2, 0, 1, 2)
-        operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(21)), 3, 5)
-        operate_layout.addWidget(money_down_button, 5, 0, 1, 2)
-        operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(21)), 7, 5)
+        operate_layout.addWidget(modify_button, 0, 0, 1, 3)
 
-        operate_layout.addWidget(Color('blue'), 1, 1)
-        operate_layout.addWidget(Color('blue'), 3, 1)
-        operate_layout.addWidget(Color('blue'), 4, 1)
-        operate_layout.addWidget(Color('blue'), 6, 1)
-        operate_layout.addWidget(Color('blue'), 7, 1)
-        operate_layout.addWidget(Color('green'), 1, 3)
-        operate_layout.addWidget(Color('green'), 3, 3)
-        operate_layout.addWidget(Color('green'), 4, 3)
-        operate_layout.addWidget(Color('green'), 6, 3)
-        operate_layout.addWidget(Color('green'), 7, 3)
+        operate_layout.addWidget(money_plus_button, 2, 0, 1, 3)
+        operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21)), 0, 5)
+        operate_layout.addWidget(CLEdit(True), 3, 1, 1, 2)
+        operate_layout.addWidget(NText('CNY'), 3, 3)
+        operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(22)), 3, 5)
+
+        operate_layout.addWidget(money_down_button, 5, 0, 1, 3)
+        operate_layout.addWidget(CBox(True), 6, 1, 1, 2)
+        operate_layout.addWidget(CLEdit(True), 6, 3, 1, 2)
+        operate_layout.addWidget(CLEdit(True), 7, 1, 1, 2)
+        operate_layout.addWidget(NText('CNY'), 7, 3)
+
+        operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(23)), 7, 5)
 
         operate_layout.setColumnStretch(0, 1)
-        operate_layout.setColumnStretch(1, 8)
+        operate_layout.setColumnStretch(1, 4)
         operate_layout.setColumnStretch(2, 4)
         operate_layout.setColumnStretch(3, 4)
-        operate_layout.setColumnStretch(4, 5)
+        operate_layout.setColumnStretch(4, 4)
+        operate_layout.setColumnStretch(5, 5)
         operate_layout.setRowStretch(0, 1)
         operate_layout.setRowStretch(1, 1)
         operate_layout.setRowStretch(2, 1)
@@ -171,8 +136,8 @@ class MainWindow(QMainWindow):
         operate_layout.setRowStretch(6, 1)
         operate_layout.setRowStretch(7, 1)
 
-        operate_layout.setSpacing(0)
-        operate_layout.setContentsMargins(35, 25, 35, 25)
+        operate_layout.setSpacing(3)
+        operate_layout.setContentsMargins(25, 15, 25, 15)
         operate_gbox = QGroupBox()
         operate_gbox.setLayout(operate_layout)
         operate_gbox.setTitle(i18n['operate']['gbox'])
