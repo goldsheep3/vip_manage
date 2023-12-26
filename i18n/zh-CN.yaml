@@ -6,12 +6,13 @@ operate:
   wechat: 微信：
   card_id: 卡号：
   birthday: 生日：
-  money: 储值：
+  money: 账户余额：
 
   search: 搜索
   exit: 退出
 
-  gbox: 操作
+  operate: 操作
+  history: 历史
   # 数组1为单选按钮，数组2为操作按钮
   modify_info:
   - 修改信息

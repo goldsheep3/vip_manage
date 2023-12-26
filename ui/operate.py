@@ -4,7 +4,7 @@ import yaml
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QMainWindow, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
-                               QGroupBox, QButtonGroup)
+                               QGroupBox, QButtonGroup, QListWidget)
 
 from ui.e_pyside import *
 
@@ -36,7 +36,7 @@ class Color(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setGeometry(550, 250, 600, 450)
+        self.setGeometry(550, 250, 800, 600)
         self.setMinimumSize(600, 450)
         config = read_yaml('config.yaml')
         i18n = read_yaml(join('i18n', config.get('language', 'zh-CN') + '.yaml'))
@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
         money_text = NText('...')
         money_text.setAlignment(Qt.AlignCenter)
 
-        info_layout.addWidget(NText(i18n['operate']['money']), 1, 7, 1, 3)
+        info_layout.addWidget(NText(i18n['operate']['money']), 0, 7, 1, 3)
         info_layout.addWidget(money_text, 1, 8, 2, 1)
         info_layout.addWidget(NText('CNY'), 2, 9)
 
@@ -103,20 +103,21 @@ class MainWindow(QMainWindow):
         operate_button_group.addButton(modify_button)
         operate_button_group.addButton(money_plus_button)
         operate_button_group.addButton(money_down_button)
-
         operate_layout = QGridLayout()
         operate_layout.addWidget(modify_button, 0, 0, 1, 3)
 
         operate_layout.addWidget(money_plus_button, 2, 0, 1, 3)
         operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21)), 0, 5)
-        operate_layout.addWidget(CLEdit(True), 3, 1, 1, 2)
+        operate_layout.addWidget(NText('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
+        operate_layout.addWidget(DSBox(True), 3, 1, 1, 2)
         operate_layout.addWidget(NText('CNY'), 3, 3)
         operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(22)), 3, 5)
 
         operate_layout.addWidget(money_down_button, 5, 0, 1, 3)
         operate_layout.addWidget(CBox(True), 6, 1, 1, 2)
         operate_layout.addWidget(CLEdit(True), 6, 3, 1, 2)
-        operate_layout.addWidget(CLEdit(True), 7, 1, 1, 2)
+        operate_layout.addWidget(NText('－', align=Qt.AlignRight | Qt.AlignVCenter), 7, 0)
+        operate_layout.addWidget(DSBox(True), 7, 1, 1, 2)
         operate_layout.addWidget(NText('CNY'), 7, 3)
 
         operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(23)), 7, 5)
@@ -140,13 +141,25 @@ class MainWindow(QMainWindow):
         operate_layout.setContentsMargins(25, 15, 25, 15)
         operate_gbox = QGroupBox()
         operate_gbox.setLayout(operate_layout)
-        operate_gbox.setTitle(i18n['operate']['gbox'])
+        operate_gbox.setTitle(i18n['operate']['operate'])
+
+        history_text = QListWidget()
+        history_text.addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  # DEBUG
+        history_text.setWordWrap(True)
+        history_layout = QVBoxLayout()
+        history_layout.setSpacing(0)
+        history_layout.setContentsMargins(5, 5, 5, 5)
+        history_layout.addWidget(history_text)
+
+        history_gbox = QGroupBox()
+        history_gbox.setLayout(history_layout)
+        history_gbox.setTitle(i18n['operate']['history'])
 
         down_layout = QHBoxLayout()  # 分隔最近明细和操作区域
         down_layout.setSpacing(15)
         down_layout.setContentsMargins(0, 0, 0, 0)
-        down_layout.addWidget(Color('blue'), 1)
-        down_layout.addWidget(operate_gbox, 2)
+        down_layout.addWidget(history_gbox, 4)
+        down_layout.addWidget(operate_gbox, 7)
         down_widget = QWidget()
         down_widget.setLayout(down_layout)
 
