@@ -1,26 +1,9 @@
-from os.path import join
-
-import yaml
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPalette, QColor
-from PySide6.QtWidgets import (QMainWindow, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
-                               QGroupBox, QButtonGroup, QListWidget, QStackedWidget)
+from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
+                               QGroupBox, QButtonGroup, QListWidget)
 
 from ui.e_pyside import *
-
-
-def read_yaml(language_file):
-    try:
-        with open(language_file, 'r', encoding='utf-8') as file:
-            # 使用load方法将YAML文件内容转换为Python对象
-            data = yaml.load(file, Loader=yaml.FullLoader)
-            return data
-    except FileNotFoundError:
-        print(f"File not found: {language_file}")
-        return None
-    except yaml.YAMLError as e:
-        print(f"Error reading YAML file {language_file}: {e}")
-        return None
 
 
 class Color(QWidget):
@@ -33,15 +16,9 @@ class Color(QWidget):
         self.setPalette(palette)
 
 
-class MainWindow(QMainWindow):
-    def __init__(self):
+class OperateWidget(QWidget):
+    def __init__(self, i18n):
         super().__init__()
-        self.setGeometry(550, 250, 800, 600)
-        self.setMinimumSize(600, 450)
-        config = read_yaml('config.yaml')
-        i18n = read_yaml(join('i18n', config.get('language', 'zh-CN') + '.yaml'))
-
-        self.setWindowTitle(i18n['operate']['title'])
 
         info_layout = QGridLayout()  # 基本信息显示Grid
         info_layout.setSpacing(0)  # DEBUG
@@ -168,19 +145,5 @@ class MainWindow(QMainWindow):
         gc_layout.setContentsMargins(50, 25, 50, 25)
         gc_layout.addWidget(info_widget, 1)
         gc_layout.addWidget(down_widget, 3)
-        gc_widget = QWidget()
-        gc_widget.setLayout(gc_layout)
 
-        stacked_widget = QStackedWidget()
-        stacked_widget.setContentsMargins(0, 0, 0, 0)
-        stacked_widget.addWidget(gc_widget)
-
-        bg_layout = QVBoxLayout()  # 分隔上标题和下操作
-        bg_layout.setSpacing(0)
-        bg_layout.setContentsMargins(0, 0, 0, 0)
-        bg_layout.addWidget(Color('red'), 2)
-        bg_layout.addWidget(stacked_widget, 13)
-        bg_widget = QWidget()
-        bg_widget.setLayout(bg_layout)
-
-        self.setCentralWidget(bg_widget)
+        self.setLayout(gc_layout)

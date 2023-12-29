@@ -2,7 +2,7 @@ from sys import argv, exit
 
 from PySide6.QtWidgets import QApplication
 
-from ui.operate import MainWindow
+from ui.application import MainWindow
 
 """
  ██████╗ ██████╗  ██████╗      ██╗███████╗ ██████╗████████╗
