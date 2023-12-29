@@ -4,7 +4,7 @@ import yaml
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QMainWindow, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
-                               QGroupBox, QButtonGroup, QListWidget)
+                               QGroupBox, QButtonGroup, QListWidget, QStackedWidget)
 
 from ui.e_pyside import *
 
@@ -107,11 +107,11 @@ class MainWindow(QMainWindow):
         operate_layout.addWidget(modify_button, 0, 0, 1, 3)
 
         operate_layout.addWidget(money_plus_button, 2, 0, 1, 3)
-        operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21)), 0, 5)
+        operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21), True), 0, 5)
         operate_layout.addWidget(NText('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
         operate_layout.addWidget(DSBox(True), 3, 1, 1, 2)
         operate_layout.addWidget(NText('CNY'), 3, 3)
-        operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(22)), 3, 5)
+        operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(22), True), 3, 5)
 
         operate_layout.addWidget(money_down_button, 5, 0, 1, 3)
         operate_layout.addWidget(CBox(True), 6, 1, 1, 2)
@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
         operate_layout.addWidget(DSBox(True), 7, 1, 1, 2)
         operate_layout.addWidget(NText('CNY'), 7, 3)
 
-        operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(23)), 7, 5)
+        operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(23), True), 7, 5)
 
         operate_layout.setColumnStretch(0, 1)
         operate_layout.setColumnStretch(1, 4)
@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
         operate_gbox.setTitle(i18n['operate']['operate'])
 
         history_text = QListWidget()
-        history_text.addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  # DEBUG
+        # history_text.addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  # DEBUG
         history_text.setWordWrap(True)
         history_layout = QVBoxLayout()
         history_layout.setSpacing(0)
@@ -171,11 +171,15 @@ class MainWindow(QMainWindow):
         gc_widget = QWidget()
         gc_widget.setLayout(gc_layout)
 
+        stacked_widget = QStackedWidget()
+        stacked_widget.setContentsMargins(0, 0, 0, 0)
+        stacked_widget.addWidget(gc_widget)
+
         bg_layout = QVBoxLayout()  # 分隔上标题和下操作
         bg_layout.setSpacing(0)
         bg_layout.setContentsMargins(0, 0, 0, 0)
         bg_layout.addWidget(Color('red'), 2)
-        bg_layout.addWidget(gc_widget, 13)
+        bg_layout.addWidget(stacked_widget, 13)
         bg_widget = QWidget()
         bg_widget.setLayout(bg_layout)
 
