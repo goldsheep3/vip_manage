@@ -18,6 +18,15 @@ class LineEdit(QLineEdit):
             self.setReadOnly(True)
 
 
+class PushText(QLabel):
+    def __init__(self, text, function, align=None):
+        super().__init__(text)
+        # 设置文字颜色为纯蓝带下划线
+        # 设置点击触发function
+        if align:
+            self.setAlignment(align)
+
+
 class PushButton(QPushButton):
     def __init__(self, text, function, read_only=False):
         super().__init__()

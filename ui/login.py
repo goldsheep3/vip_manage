@@ -14,7 +14,7 @@ class Color(QWidget):
         self.setPalette(palette)
 
 
-class OperateWidget(QWidget):
+class LoginWidget(QWidget):
     def __init__(self, i18n):
         super().__init__()
 
@@ -28,6 +28,12 @@ class OperateWidget(QWidget):
         base_layout.setRowStretch(1, 1)
         base_layout.setRowStretch(2, 1)
         base_layout.setRowStretch(3, 1)
-        base_layout.setRowStretch(4, 3)
+        base_layout.setRowStretch(4, 6)
+
+        forget_button = nqt.PushText('忘记密码？', lambda: print(51))
+
+        base_layout.addWidget(nqt.Text(i18n['MLogin']['press_key']), 1, 1)
+        base_layout.addWidget(nqt.LineEdit(), 2, 1)
+        base_layout.addWidget(forget_button, 3, 1)
 
         self.setLayout(base_layout)

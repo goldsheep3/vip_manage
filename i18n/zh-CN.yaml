@@ -1,6 +1,6 @@
 title: VIP会员管理系统
 
-operate:
+MOperate:
   phone_number: 手机号码：
   name: 姓名：
   wechat: 微信：
@@ -23,3 +23,7 @@ operate:
   money_down:
   - 消费
   - 消费
+
+MLogin:
+  press_key: 请输入管理员密码：
+  forget: 忘记密码？

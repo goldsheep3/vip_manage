@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout,
                                QStackedWidget)
 
 from ui.operate import OperateWidget
+from ui.login import LoginWidget
 
 
 def read_yaml(language_file):
@@ -43,9 +44,12 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"{config['organization']} - {i18n['title']}")
 
         operate_widget = OperateWidget(i18n)
+        login_widget = LoginWidget(i18n)
 
         stacked_widget = QStackedWidget()
         stacked_widget.setContentsMargins(0, 0, 0, 0)
+        # DEBUG：暂时不能切换。谁排前面谁显示。
+        stacked_widget.addWidget(login_widget)
         stacked_widget.addWidget(operate_widget)
 
         bg_layout = QVBoxLayout()  # 分隔上标题和下操作
