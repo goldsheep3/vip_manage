@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         config = read_yaml('config.yaml')
         i18n = read_yaml(join('i18n', config.get('language', 'zh-CN') + '.yaml'))
 
-        self.setWindowTitle(i18n['operate']['title'])
+        self.setWindowTitle(f"{config['organization']} - {i18n['title']}")
 
         operate_widget = OperateWidget(i18n)
 

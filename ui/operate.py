@@ -1,9 +1,8 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPalette, QColor
-from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout,
-                               QGroupBox, QButtonGroup, QListWidget)
+from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget)
 
-from ui.e_pyside import *
+import ui.n_qt as nqt
 
 
 class Color(QWidget):
@@ -23,32 +22,32 @@ class OperateWidget(QWidget):
         info_layout = QGridLayout()  # 基本信息显示Grid
         info_layout.setSpacing(0)  # DEBUG
         info_layout.setContentsMargins(0, 0, 0, 0)
-        info_layout.addWidget(NText(i18n['operate']['phone_number']), 0, 0)
-        phone_input = CLEdit()
+        info_layout.addWidget(nqt.Text(i18n['operate']['phone_number']), 0, 0)
+        phone_input = nqt.LineEdit()
         phone_input.setContentsMargins(0, 5, 10, 5)
         info_layout.addWidget(phone_input, 0, 1, 1, 3)
-        info_layout.addWidget(NText(i18n['operate']['name']), 1, 0)
-        name_show = CLEdit(True, '...')
+        info_layout.addWidget(nqt.Text(i18n['operate']['name']), 1, 0)
+        name_show = nqt.LineEdit(True, '...')
         info_layout.addWidget(name_show, 1, 1)
-        info_layout.addWidget(NText(i18n['operate']['wechat']), 2, 0)
-        wechat_show = CLEdit(True, '...')
+        info_layout.addWidget(nqt.Text(i18n['operate']['wechat']), 2, 0)
+        wechat_show = nqt.LineEdit(True, '...')
         info_layout.addWidget(wechat_show, 2, 1)
 
-        info_layout.addWidget(BButton(i18n['operate']['search'], lambda: print(1)), 0, 4)
-        info_layout.addWidget(BButton(i18n['operate']['exit'], lambda: print(2)), 0, 5)
-        info_layout.addWidget(NText(i18n['operate']['card_id']), 1, 3)
-        card_id_show = CLEdit(True, '...')
+        info_layout.addWidget(nqt.PushButton(i18n['operate']['search'], lambda: print(1)), 0, 4)
+        info_layout.addWidget(nqt.PushButton(i18n['operate']['exit'], lambda: print(2)), 0, 5)
+        info_layout.addWidget(nqt.Text(i18n['operate']['card_id']), 1, 3)
+        card_id_show = nqt.LineEdit(True, '...')
         info_layout.addWidget(card_id_show, 1, 4, 1, 2)
-        info_layout.addWidget(NText(i18n['operate']['birthday']), 2, 3)
-        birthday_show = CLEdit(True, '...')
+        info_layout.addWidget(nqt.Text(i18n['operate']['birthday']), 2, 3)
+        birthday_show = nqt.LineEdit(True, '...')
         info_layout.addWidget(birthday_show, 2, 4, 1, 2)
 
-        money_text = NText('...')
+        money_text = nqt.Text('...')
         money_text.setAlignment(Qt.AlignCenter)
 
-        info_layout.addWidget(NText(i18n['operate']['money']), 0, 7, 1, 3)
+        info_layout.addWidget(nqt.Text(i18n['operate']['money']), 0, 7, 1, 3)
         info_layout.addWidget(money_text, 1, 8, 2, 1)
-        info_layout.addWidget(NText('CNY'), 2, 9)
+        info_layout.addWidget(nqt.Text('CNY'), 2, 9)
 
         info_layout.setColumnStretch(0, 6)
         info_layout.setColumnStretch(1, 12)
@@ -66,13 +65,13 @@ class OperateWidget(QWidget):
         info_widget = QWidget()
         info_widget.setLayout(info_layout)
 
-        modify_button = RButton()  # 修改信息
+        modify_button = nqt.RadioButton()  # 修改信息
         modify_button.setText(i18n['operate']['modify_info'][0])
         modify_button.clicked.connect(lambda: print(12))
-        money_plus_button = RButton()  # 储值
+        money_plus_button = nqt.RadioButton()  # 储值
         money_plus_button.setText(i18n['operate']['money_plus'][0])
         money_plus_button.clicked.connect(lambda: print(14))
-        money_down_button = RButton()  # 消费
+        money_down_button = nqt.RadioButton()  # 消费
         money_down_button.setText(i18n['operate']['money_down'][0])
         money_down_button.clicked.connect(lambda: print(15))
         operate_button_group = QButtonGroup()
@@ -84,20 +83,20 @@ class OperateWidget(QWidget):
         operate_layout.addWidget(modify_button, 0, 0, 1, 3)
 
         operate_layout.addWidget(money_plus_button, 2, 0, 1, 3)
-        operate_layout.addWidget(BButton(i18n['operate']['modify_info'][1], lambda: print(21), True), 0, 5)
-        operate_layout.addWidget(NText('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
-        operate_layout.addWidget(DSBox(True), 3, 1, 1, 2)
-        operate_layout.addWidget(NText('CNY'), 3, 3)
-        operate_layout.addWidget(BButton(i18n['operate']['money_plus'][1], lambda: print(22), True), 3, 5)
+        operate_layout.addWidget(nqt.PushButton(i18n['operate']['modify_info'][1], lambda: print(21), True), 0, 5)
+        operate_layout.addWidget(nqt.Text('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
+        operate_layout.addWidget(nqt.DoubleSpinBox(True), 3, 1, 1, 2)
+        operate_layout.addWidget(nqt.Text('CNY'), 3, 3)
+        operate_layout.addWidget(nqt.PushButton(i18n['operate']['money_plus'][1], lambda: print(22), True), 3, 5)
 
         operate_layout.addWidget(money_down_button, 5, 0, 1, 3)
-        operate_layout.addWidget(CBox(True), 6, 1, 1, 2)
-        operate_layout.addWidget(CLEdit(True), 6, 3, 1, 2)
-        operate_layout.addWidget(NText('－', align=Qt.AlignRight | Qt.AlignVCenter), 7, 0)
-        operate_layout.addWidget(DSBox(True), 7, 1, 1, 2)
-        operate_layout.addWidget(NText('CNY'), 7, 3)
+        operate_layout.addWidget(nqt.ComboBox(True), 6, 1, 1, 2)
+        operate_layout.addWidget(nqt.LineEdit(True), 6, 3, 1, 2)
+        operate_layout.addWidget(nqt.Text('－', align=Qt.AlignRight | Qt.AlignVCenter), 7, 0)
+        operate_layout.addWidget(nqt.DoubleSpinBox(True), 7, 1, 1, 2)
+        operate_layout.addWidget(nqt.Text('CNY'), 7, 3)
 
-        operate_layout.addWidget(BButton(i18n['operate']['money_down'][1], lambda: print(23), True), 7, 5)
+        operate_layout.addWidget(nqt.PushButton(i18n['operate']['money_down'][1], lambda: print(23), True), 7, 5)
 
         operate_layout.setColumnStretch(0, 1)
         operate_layout.setColumnStretch(1, 4)
@@ -140,10 +139,10 @@ class OperateWidget(QWidget):
         down_widget = QWidget()
         down_widget.setLayout(down_layout)
 
-        gc_layout = QVBoxLayout()  # 分隔操作区上下
-        gc_layout.setSpacing(10)
-        gc_layout.setContentsMargins(50, 25, 50, 25)
-        gc_layout.addWidget(info_widget, 1)
-        gc_layout.addWidget(down_widget, 3)
+        base_layout = QVBoxLayout()  # 分隔操作区上下
+        base_layout.setSpacing(10)
+        base_layout.setContentsMargins(50, 25, 50, 25)
+        base_layout.addWidget(info_widget, 1)
+        base_layout.addWidget(down_widget, 3)
 
-        self.setLayout(gc_layout)
+        self.setLayout(base_layout)

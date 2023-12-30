@@ -1,6 +1,6 @@
-operate:
-  title: VIP会员管理系统
+title: VIP会员管理系统
 
+operate:
   phone_number: 手机号码：
   name: 姓名：
   wechat: 微信：
@@ -12,7 +12,7 @@ operate:
   exit: 退出
 
   operate: 操作
-  history: 历史
+  history: 近期操作历史
   # 数组1为单选按钮，数组2为操作按钮
   modify_info:
   - 修改信息

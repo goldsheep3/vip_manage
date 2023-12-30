@@ -1,14 +1,14 @@
 from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox)
 
 
-class NText(QLabel):
+class Text(QLabel):
     def __init__(self, text, align=None):
         super().__init__(text)
         if align:
             self.setAlignment(align)
 
 
-class CLEdit(QLineEdit):
+class LineEdit(QLineEdit):
     def __init__(self, read_only=False, text=''):
         super().__init__()
         self.setContentsMargins(0, 2, 0, 2)
@@ -18,7 +18,7 @@ class CLEdit(QLineEdit):
             self.setReadOnly(True)
 
 
-class BButton(QPushButton):
+class PushButton(QPushButton):
     def __init__(self, text, function, read_only=False):
         super().__init__()
         self.setText(text)
@@ -29,7 +29,7 @@ class BButton(QPushButton):
             self.setEnabled(False)
 
 
-class RButton(QRadioButton):
+class RadioButton(QRadioButton):
     def __init__(self, read_only=False):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -37,7 +37,7 @@ class RButton(QRadioButton):
             self.setEnabled(False)
 
 
-class CBox(QComboBox):
+class ComboBox(QComboBox):
     def __init__(self, read_only=False):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -45,7 +45,7 @@ class CBox(QComboBox):
             self.setEnabled(False)
 
 
-class DSBox(QDoubleSpinBox):
+class DoubleSpinBox(QDoubleSpinBox):
     def __init__(self, read_only=False):
         super().__init__()
         if read_only:
