@@ -1,3 +1,4 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox)
 
 
@@ -20,11 +21,21 @@ class LineEdit(QLineEdit):
 
 class PushText(QLabel):
     def __init__(self, text, function, align=None):
-        super().__init__(text)
-        # 设置文字颜色为纯蓝带下划线
-        # 设置点击触发function
+        super().__init__()
+        self.setTextFormat(Qt.RichText)
+        self.setText(f'<span style="color: blue;"><u>{text}</u></span>')
+        self.linkActivated.connect(function)
         if align:
             self.setAlignment(align)
+
+    def mousePressEvent(self, event):
+        self.linkActivated.emit(self.text())
+
+    def enterEvent(self, event):
+        self.setCursor(Qt.PointingHandCursor)
+
+    def leaveEvent(self, event):
+        self.setCursor(Qt.ArrowCursor)
 
 
 class PushButton(QPushButton):
