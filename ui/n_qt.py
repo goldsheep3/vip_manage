@@ -51,9 +51,11 @@ class PushButton(QPushButton):
 
 
 class RadioButton(QRadioButton):
-    def __init__(self, read_only=False):
+    def __init__(self, text, function, read_only=False):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setText(text)
+        self.clicked.connect(function)
         if read_only:
             self.setEnabled(False)
 
