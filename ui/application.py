@@ -45,8 +45,8 @@ class MainWindow(QMainWindow):
 
         conn = peewee.SqliteDatabase('database.db')
 
-        operate_widget = OperateWidget(i18n, conn)
-        login_widget = LoginWidget(i18n, conn)
+        operate_widget = OperateWidget(i18n, conn, self)
+        login_widget = LoginWidget(i18n, conn, self)
 
         stacked_widget = QStackedWidget()
         stacked_widget.setContentsMargins(0, 0, 0, 0)

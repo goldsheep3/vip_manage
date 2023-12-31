@@ -16,7 +16,7 @@ class Color(QWidget):
 
 
 class OperateWidget(QWidget):
-    def __init__(self, i18n, conn):
+    def __init__(self, i18n, conn, window):
         super().__init__()
 
         info_layout = QGridLayout()  # 基本信息显示Grid
