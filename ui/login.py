@@ -24,6 +24,7 @@ class LoginWidget(QWidget):
         super().__init__()
         self.conn = conn
         self.window = window
+        self.trans = i18n['MLogin']
 
         base_layout = QGridLayout()
         base_layout.setSpacing(10)
@@ -39,15 +40,15 @@ class LoginWidget(QWidget):
         base_layout.setRowStretch(4, 1)
 
         password_edit = nqt.LineEdit()
-        password_edit.returnPressed.connect(lambda: self.login(password_edit.text(), i18n['MLogin']['wrong']))
+        password_edit.returnPressed.connect(lambda: self.login(password_edit.text(), self.trans['wrong']))
 
-        base_layout.addWidget(nqt.Text(i18n['MLogin']['press_key']), 1, 1, 1, 2)
+        base_layout.addWidget(nqt.Text(self.trans['press_key']), 1, 1, 1, 2)
         base_layout.addWidget(password_edit, 2, 1)
-        base_layout.addWidget(nqt.PushButton(i18n['MLogin']['login'],
-                                             lambda: self.login(password_edit.text(), i18n['MLogin']['wrong'])), 2, 2)
+        base_layout.addWidget(nqt.PushButton(self.trans['login'],
+                                             lambda: self.login(password_edit.text(), self.trans['wrong'])), 2, 2)
 
-        forget_button = nqt.PushText(i18n['MLogin']['forget_pwd'],
-                                     lambda: self.show_forget_tip(i18n['MLogin']['forget']), align=Qt.AlignCenter)
+        forget_button = nqt.PushText(self.trans['forget_pwd'],
+                                     lambda: self.show_forget_tip(self.trans['forget']), align=Qt.AlignCenter)
         base_layout.addWidget(forget_button, 4, 1, 1, 2)
 
         self.setLayout(base_layout)

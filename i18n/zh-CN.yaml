@@ -1,5 +1,7 @@
 title: VIP会员管理系统
 
+error: 错误
+
 MOperate:
   phone_number: 手机号码：
   name: 姓名：
