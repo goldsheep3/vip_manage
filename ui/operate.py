@@ -1,7 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPalette, QColor
-from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget,
-                               QMessageBox)
+from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget)
 from peewee import CharField, Model, IntegerField
 
 import ui.n_qt as nqt
@@ -36,7 +34,7 @@ class OperateWidget(QWidget):
         self.money_down_note = nqt.LineEdit(True)
 
         self.button_search = nqt.PushButton(self.trans['search'], lambda: print(1))
-        self.button_exit = nqt.PushButton(self.trans['exit'], lambda: print(2))
+        self.button_exit = nqt.PushButton(self.trans['exit'], self.on_exit_button_clicked, True)
         self.button_modify = nqt.PushButton(self.trans['modify_info'][1],
                                             lambda: print(21), True)
         self.button_money_plus = nqt.PushButton(self.trans['money_plus'][1],
@@ -45,11 +43,11 @@ class OperateWidget(QWidget):
                                                 lambda: print(24), True)
 
         self.radio_modify = nqt.RadioButton(self.trans['modify_info'][0],
-                                            lambda: print(12))
+                                            lambda: print(12), True)
         self.radio_money_plus = nqt.RadioButton(self.trans['money_plus'][0],
-                                                lambda: print(14))
+                                                lambda: print(14), True)
         self.radio_money_down = nqt.RadioButton(self.trans['money_down'][0],
-                                                lambda: print(15))
+                                                lambda: print(15), True)
         radio_group = QButtonGroup()
         radio_group.setExclusive(True)
         radio_group.addButton(self.radio_modify)
@@ -58,6 +56,28 @@ class OperateWidget(QWidget):
 
         # 基础显示组件定义
         self.init_ui()
+
+    def on_exit_button_clicked(self):
+        # 清空文本框和历史记录
+        self.phone_number.clear()
+        self.name.setText('...')
+        self.wechat.setText('...')
+        self.card_id.setText('...')
+        self.birthday.setText('...')
+        self.money_value.clear()
+        self.history.clear()
+
+        # 禁用按钮和单选框
+        self.button_exit.setDisabled(True)
+        self.button_modify.setDisabled(True)
+        self.button_money_plus.setDisabled(True)
+        self.button_money_down.setDisabled(True)
+        self.radio_modify.setDisabled(True)
+        self.radio_money_plus.setDisabled(True)
+        self.radio_money_down.setDisabled(True)
+
+        # 将焦点移动到self.phone_number
+        self.phone_number.setFocus()
 
     def init_ui(self):
         info_layout = QGridLayout()  # 基本信息显示Grid
