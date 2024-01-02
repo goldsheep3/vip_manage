@@ -13,8 +13,13 @@ from ui.application import MainWindow
  ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚════╝ ╚══════╝ ╚═════╝   ╚═╝   
 """
 
-if __name__ == "__main__":
+
+def with_ui():
     app = QApplication(argv)
     window = MainWindow()
     window.show()
     exit(app.exec())
+
+
+if __name__ == "__main__":
+    with_ui()

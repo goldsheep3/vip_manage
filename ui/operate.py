@@ -1,8 +1,9 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget)
-from peewee import CharField, Model, IntegerField
+from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget,
+                               QMessageBox)
 
 import ui.n_qt as nqt
+import manage.operate as operate
 
 
 class OperateWidget(QWidget):
@@ -13,7 +14,7 @@ class OperateWidget(QWidget):
         self.trans = i18n['MOperate']
         self.i18n = i18n
         # 链接数据库
-        self.base_info_model = self.create_tables_model()
+        self.base_info_model = operate.create_tables_model(self.conn)
 
         # 基础交互组件定义
         self.phone_number = nqt.LineEdit()
@@ -33,7 +34,7 @@ class OperateWidget(QWidget):
         self.money_down_category = nqt.ComboBox(True)
         self.money_down_note = nqt.LineEdit(True)
 
-        self.button_search = nqt.PushButton(self.trans['search'], lambda: print(1))
+        self.button_search = nqt.PushButton(self.trans['search'], self.on_search_button_clicked)
         self.button_exit = nqt.PushButton(self.trans['exit'], self.on_exit_button_clicked, True)
         self.button_modify = nqt.PushButton(self.trans['modify_info'][1],
                                             lambda: print(21), True)
@@ -56,6 +57,13 @@ class OperateWidget(QWidget):
 
         # 基础显示组件定义
         self.init_ui()
+
+    def on_search_button_clicked(self):
+        try:
+            phone_value = int(self.phone_number.text().strip())
+        except ValueError:
+            QMessageBox.critical(self, self.i18n['error'], self.trans['errors']['no_number'])
+            return
 
     def on_exit_button_clicked(self):
         # 清空文本框和历史记录
@@ -181,30 +189,4 @@ class OperateWidget(QWidget):
 
         self.setLayout(base_layout)
 
-    def create_tables_model(self):
-        class BaseModel(Model):
-            class Meta:
-                database = self.conn
 
-        class BaseInfo(BaseModel):
-            phone_number = IntegerField(unique=True, null=False)
-            card_id = IntegerField(primary_key=True, unique=True, null=False)
-            name = CharField()
-            wechat = CharField()
-            birthday = IntegerField()
-            balance = IntegerField(null=False)
-
-        class History(BaseModel):
-            card_id = IntegerField(primary_key=True, unique=True, null=False)
-            time = CharField(null=False)
-            category = CharField(null=False)
-            note = CharField(null=True)
-            i_and_e = IntegerField(null=False)
-            balance = IntegerField(null=False)
-
-        class Admin(BaseModel):
-            id = IntegerField(primary_key=True)
-            password_hash = CharField(null=False)
-            sugar = IntegerField(null=False)
-
-        return BaseInfo, History, Admin
