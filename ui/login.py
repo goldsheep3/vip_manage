@@ -1,11 +1,10 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QGridLayout, QWidget, QDialog, QVBoxLayout, QHBoxLayout, QMessageBox)
-import hashlib
-from peewee import Model, PrimaryKeyField, CharField, IntegerField
 
-import ui.n_qt as nqt
-from manage.login import login, verify, WrongKeyError
+from lib.n_qt import LineEdit, Text, PushButton, PushText
+from manage.app import check_md5_key, key_sugar
+from lib.errors import WrongKeyError
 
 
 class Color(QWidget):
@@ -40,32 +39,29 @@ class LoginWidget(QWidget):
         base_layout.setRowStretch(3, 6)
         base_layout.setRowStretch(4, 1)
 
-        password_edit = nqt.LineEdit()
+        password_edit = LineEdit(pwd=True)
         password_edit.returnPressed.connect(lambda: self.login(password_edit.text(), self.trans['wrong']))
 
-        base_layout.addWidget(nqt.Text(self.trans['press_key']), 1, 1, 1, 2)
+        base_layout.addWidget(Text(self.trans['press_key']), 1, 1, 1, 2)
         base_layout.addWidget(password_edit, 2, 1)
-        base_layout.addWidget(nqt.PushButton(self.trans['login'],
-                                             lambda: self.login(password_edit.text(), self.trans['wrong'])), 2, 2)
+        base_layout.addWidget(PushButton(self.trans['login'],
+                                         lambda: self.login(password_edit.text(), self.trans['wrong'])), 2, 2)
 
-        forget_button = nqt.PushText(self.trans['forget_pwd'],
-                                     lambda: self.show_forget_tip(self.trans['forget']), align=Qt.AlignCenter)
+        forget_button = PushText(self.trans['forget_pwd'],
+                                 lambda: self.show_forget_tip(self.trans['forget']), align=Qt.AlignCenter)
         base_layout.addWidget(forget_button, 4, 1, 1, 2)
 
         self.setLayout(base_layout)
 
     def login(self, password, trans):
         try:
-            login_code = login(self.conn, trans, True, password)
+            check_md5_key(self.conn, password, key_sugar.get('login'))
         except WrongKeyError:
             self.window.setEnabled(False)
             QMessageBox.information(self.window, trans['title'], trans['tip'])
             self.window.setEnabled(True)
         else:
-            if login_code == 0:
-                self.login_successful.emit()  # 发送切换Stacked信号
-            else:
-                QMessageBox.information(self.window, trans['title'], str(login_code))
+            self.login_successful.emit()  # 发送切换Stacked信号
 
     def show_forget_tip(self, trans):
         self.window.setEnabled(False)
@@ -83,23 +79,23 @@ class ForgetTip(QDialog):
 
         layout = QVBoxLayout()
 
-        layout.addWidget(nqt.Text(trans['tip1']))
-        layout.addWidget(nqt.Text(trans['tip2']))
+        layout.addWidget(Text(trans['tip1']))
+        layout.addWidget(Text(trans['tip2']))
 
-        key_line_edit = nqt.LineEdit()
+        key_line_edit = LineEdit()
         layout.addWidget(key_line_edit)
 
         button_layout = QHBoxLayout()
-        button_layout.addWidget(nqt.PushButton(trans['button1'],
-                                               lambda: self.verify_key(key_line_edit.text(), trans)))
-        button_layout.addWidget(nqt.PushButton(trans['button2'], self.reject))
+        button_layout.addWidget(PushButton(trans['button1'],
+                                           lambda: self.verify_key(key_line_edit.text(), trans)))
+        button_layout.addWidget(PushButton(trans['button2'], self.reject))
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
 
     def verify_key(self, entered_key, trans):
         try:
-            verify(self.conn, entered_key)
+            check_md5_key(self.conn, entered_key, key_sugar.get('verify'))
         except WrongKeyError:
             QMessageBox.warning(self, trans['wrong1'], trans['wrong2'])
         else:

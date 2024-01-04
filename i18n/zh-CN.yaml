@@ -2,6 +2,10 @@ title: VIP会员管理系统
 
 error: 错误
 
+MMain:
+  no_window: 指定是否使用UI界面。
+  language: 指定程序所使用的语言，如`zh-CN`、`en_US`等。会覆盖配置文件。
+
 MOperate:
   phone_number: 手机号码：
   name: 姓名：
@@ -50,4 +54,4 @@ MLogin:
 
   without_ui:
     forget_pwd: 忘记密码？可以输入 ? 来尝试找回。
-
+    found: 秘钥验证成功，已登入，请尽快修改密码。

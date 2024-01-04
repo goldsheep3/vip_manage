@@ -1,12 +1,9 @@
-from os.path import join
-
-import peewee
+from peewee import SqliteDatabase
 from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QStackedWidget)
 
 from ui.operate import OperateWidget
 from ui.login import LoginWidget
-from lib.read import read_yaml
 
 
 class Color(QWidget):
@@ -20,16 +17,14 @@ class Color(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, config, i18n):
         super().__init__()
         self.setGeometry(550, 250, 800, 600)
         self.setMinimumSize(600, 450)
-        config = read_yaml('config.yaml')
-        i18n = read_yaml(join('i18n', config.get('language', 'zh-CN') + '.yaml'))
 
         self.setWindowTitle(f"{config['organization']} - {i18n['title']}")
 
-        conn = peewee.SqliteDatabase('database.db')
+        conn = SqliteDatabase('database.db')
 
         operate_widget = OperateWidget(i18n, conn, self)
         login_widget = LoginWidget(i18n, conn, self)

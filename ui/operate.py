@@ -2,8 +2,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget,
                                QMessageBox)
 
-import ui.n_qt as nqt
-import manage.operate as operate
+from lib.n_qt import LineEdit, Text, DoubleSpinBox, ComboBox, PushButton, RadioButton
+from lib.sql_table import create_tables_model
 
 
 class OperateWidget(QWidget):
@@ -14,40 +14,40 @@ class OperateWidget(QWidget):
         self.trans = i18n['MOperate']
         self.i18n = i18n
         # 链接数据库
-        self.base_info_model = operate.create_tables_model(self.conn)
+        self.base_info_model = create_tables_model(self.conn)
 
         # 基础交互组件定义
-        self.phone_number = nqt.LineEdit()
+        self.phone_number = LineEdit()
         self.phone_number.setContentsMargins(0, 5, 10, 5)
-        self.name = nqt.LineEdit(True, '...')
-        self.wechat = nqt.LineEdit(True, '...')
-        self.card_id = nqt.LineEdit(True, '...')
-        self.birthday = nqt.LineEdit(True, '...')
-        self.money_value = nqt.Text('...')
+        self.name = LineEdit(True, '...')
+        self.wechat = LineEdit(True, '...')
+        self.card_id = LineEdit(True, '...')
+        self.birthday = LineEdit(True, '...')
+        self.money_value = Text('...')
         self.money_value.setAlignment(Qt.AlignCenter)
         self.history = QListWidget()
         self.history.setWordWrap(True)
         # .addItem(f'{data} {variation}{money_value}CNY {variation_type}[{category}{-note}]')
         # .addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  <- Sample
-        self.money_plus_num = nqt.DoubleSpinBox(True)
-        self.money_down_num = nqt.DoubleSpinBox(True)
-        self.money_down_category = nqt.ComboBox(True)
-        self.money_down_note = nqt.LineEdit(True)
+        self.money_plus_num = DoubleSpinBox(True)
+        self.money_down_num = DoubleSpinBox(True)
+        self.money_down_category = ComboBox(True)
+        self.money_down_note = LineEdit(True)
 
-        self.button_search = nqt.PushButton(self.trans['search'], self.on_search_button_clicked)
-        self.button_exit = nqt.PushButton(self.trans['exit'], self.on_exit_button_clicked, True)
-        self.button_modify = nqt.PushButton(self.trans['modify_info'][1],
+        self.button_search = PushButton(self.trans['search'], self.on_search_button_clicked)
+        self.button_exit = PushButton(self.trans['exit'], self.on_exit_button_clicked, True)
+        self.button_modify = PushButton(self.trans['modify_info'][1],
                                             lambda: print(21), True)
-        self.button_money_plus = nqt.PushButton(self.trans['money_plus'][1],
+        self.button_money_plus = PushButton(self.trans['money_plus'][1],
                                                 lambda: print(23), True)
-        self.button_money_down = nqt.PushButton(self.trans['money_down'][1],
+        self.button_money_down = PushButton(self.trans['money_down'][1],
                                                 lambda: print(24), True)
 
-        self.radio_modify = nqt.RadioButton(self.trans['modify_info'][0],
+        self.radio_modify = RadioButton(self.trans['modify_info'][0],
                                             lambda: print(12), True)
-        self.radio_money_plus = nqt.RadioButton(self.trans['money_plus'][0],
+        self.radio_money_plus = RadioButton(self.trans['money_plus'][0],
                                                 lambda: print(14), True)
-        self.radio_money_down = nqt.RadioButton(self.trans['money_down'][0],
+        self.radio_money_down = RadioButton(self.trans['money_down'][0],
                                                 lambda: print(15), True)
         radio_group = QButtonGroup()
         radio_group.setExclusive(True)
@@ -91,23 +91,23 @@ class OperateWidget(QWidget):
         info_layout = QGridLayout()  # 基本信息显示Grid
         info_layout.setSpacing(0)
         info_layout.setContentsMargins(0, 0, 0, 0)
-        info_layout.addWidget(nqt.Text(self.trans['phone_number']), 0, 0)
+        info_layout.addWidget(Text(self.trans['phone_number']), 0, 0)
         info_layout.addWidget(self.phone_number, 0, 1, 1, 3)
-        info_layout.addWidget(nqt.Text(self.trans['name']), 1, 0)
+        info_layout.addWidget(Text(self.trans['name']), 1, 0)
         info_layout.addWidget(self.name, 1, 1)
-        info_layout.addWidget(nqt.Text(self.trans['wechat']), 2, 0)
+        info_layout.addWidget(Text(self.trans['wechat']), 2, 0)
         info_layout.addWidget(self.wechat, 2, 1)
 
         info_layout.addWidget(self.button_search, 0, 4)
         info_layout.addWidget(self.button_exit, 0, 5)
-        info_layout.addWidget(nqt.Text(self.trans['card_id']), 1, 3)
+        info_layout.addWidget(Text(self.trans['card_id']), 1, 3)
         info_layout.addWidget(self.card_id, 1, 4, 1, 2)
-        info_layout.addWidget(nqt.Text(self.trans['birthday']), 2, 3)
+        info_layout.addWidget(Text(self.trans['birthday']), 2, 3)
         info_layout.addWidget(self.birthday, 2, 4, 1, 2)
 
-        info_layout.addWidget(nqt.Text(self.trans['money']), 0, 7, 1, 3)
+        info_layout.addWidget(Text(self.trans['money']), 0, 7, 1, 3)
         info_layout.addWidget(self.money_value, 1, 8, 2, 1)
-        info_layout.addWidget(nqt.Text('CNY'), 2, 9)
+        info_layout.addWidget(Text('CNY'), 2, 9)
 
         info_layout.setColumnStretch(0, 6)
         info_layout.setColumnStretch(1, 12)
@@ -130,17 +130,17 @@ class OperateWidget(QWidget):
         operate_layout.addWidget(self.button_modify, 0, 5)
 
         operate_layout.addWidget(self.radio_money_plus, 2, 0, 1, 3)
-        operate_layout.addWidget(nqt.Text('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
+        operate_layout.addWidget(Text('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
         operate_layout.addWidget(self.money_plus_num, 3, 1, 1, 2)
-        operate_layout.addWidget(nqt.Text('CNY'), 3, 3)
+        operate_layout.addWidget(Text('CNY'), 3, 3)
         operate_layout.addWidget(self.button_money_plus, 3, 5)
 
         operate_layout.addWidget(self.radio_money_down, 5, 0, 1, 3)
         operate_layout.addWidget(self.money_down_category, 6, 1, 1, 2)
         operate_layout.addWidget(self.money_down_note, 6, 3, 1, 2)
-        operate_layout.addWidget(nqt.Text('－', align=Qt.AlignRight | Qt.AlignVCenter), 7, 0)
+        operate_layout.addWidget(Text('－', align=Qt.AlignRight | Qt.AlignVCenter), 7, 0)
         operate_layout.addWidget(self.money_down_num, 7, 1, 1, 2)
-        operate_layout.addWidget(nqt.Text('CNY'), 7, 3)
+        operate_layout.addWidget(Text('CNY'), 7, 3)
         operate_layout.addWidget(self.button_money_down, 7, 5)
 
         operate_layout.setColumnStretch(0, 1)
@@ -188,5 +188,3 @@ class OperateWidget(QWidget):
         base_layout.addWidget(down_widget, 3)
 
         self.setLayout(base_layout)
-
-

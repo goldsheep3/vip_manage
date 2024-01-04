@@ -1,6 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox,
-                               QDialog, QGridLayout)
+from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox)
 
 
 class Text(QLabel):
@@ -11,13 +10,16 @@ class Text(QLabel):
 
 
 class LineEdit(QLineEdit):
-    def __init__(self, read_only=False, text=''):
+    def __init__(self, read_only=False, text='', pwd=False):
         super().__init__()
         self.setContentsMargins(0, 2, 0, 2)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setText(text)
         if read_only:
             self.setReadOnly(True)
+        if pwd:
+            # noinspection PyUnresolvedReferences
+            self.setEchoMode(QLineEdit.Password)
 
 
 class PushText(QLabel):
