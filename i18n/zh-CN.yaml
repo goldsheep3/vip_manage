@@ -1,7 +1,5 @@
 title: VIP会员管理系统
 
-error: 错误
-
 MMain:
   no_window: 指定是否使用UI界面。
   language: 指定程序所使用的语言，如`zh-CN`、`en_US`等。会覆盖配置文件。
@@ -31,6 +29,7 @@ MOperate:
   - 消费
 
   errors:
+    error: 错误！
     no_number: 请输入合法的手机号！
     wrong_phone: 请输入正确的手机号！
 
@@ -54,4 +53,6 @@ MLogin:
 
   without_ui:
     forget_pwd: 忘记密码？可以输入 ? 来尝试找回。
+    exit_tip: 输入exit退出。
     found: 秘钥验证成功，已登入，请尽快修改密码。
+    loginRight: 登录成功！

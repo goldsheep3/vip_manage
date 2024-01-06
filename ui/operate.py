@@ -37,18 +37,18 @@ class OperateWidget(QWidget):
         self.button_search = PushButton(self.trans['search'], self.on_search_button_clicked)
         self.button_exit = PushButton(self.trans['exit'], self.on_exit_button_clicked, True)
         self.button_modify = PushButton(self.trans['modify_info'][1],
-                                            lambda: print(21), True)
+                                        lambda: print(21), True)
         self.button_money_plus = PushButton(self.trans['money_plus'][1],
-                                                lambda: print(23), True)
+                                            lambda: print(23), True)
         self.button_money_down = PushButton(self.trans['money_down'][1],
-                                                lambda: print(24), True)
+                                            lambda: print(24), True)
 
         self.radio_modify = RadioButton(self.trans['modify_info'][0],
-                                            lambda: print(12), True)
+                                        lambda: print(12), True)
         self.radio_money_plus = RadioButton(self.trans['money_plus'][0],
-                                                lambda: print(14), True)
+                                            lambda: print(14), True)
         self.radio_money_down = RadioButton(self.trans['money_down'][0],
-                                                lambda: print(15), True)
+                                            lambda: print(15), True)
         radio_group = QButtonGroup()
         radio_group.setExclusive(True)
         radio_group.addButton(self.radio_modify)
@@ -62,7 +62,7 @@ class OperateWidget(QWidget):
         try:
             phone_value = int(self.phone_number.text().strip())
         except ValueError:
-            QMessageBox.critical(self, self.i18n['error'], self.trans['errors']['no_number'])
+            QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_number'])
             return
 
     def on_exit_button_clicked(self):

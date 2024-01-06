@@ -11,7 +11,7 @@ def create_tables_model(conn):
         card_id = IntegerField(primary_key=True, unique=True, null=False)
         name = CharField()
         wechat = CharField()
-        birthday = IntegerField()
+        birthday = CharField()
         balance = IntegerField(null=False)
 
     class History(BaseModel):

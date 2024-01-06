@@ -4,7 +4,6 @@ from PySide6.QtWidgets import (QGridLayout, QWidget, QDialog, QVBoxLayout, QHBox
 
 from lib.n_qt import LineEdit, Text, PushButton, PushText
 from manage.app import check_md5_key, key_sugar
-from lib.errors import WrongKeyError
 
 
 class Color(QWidget):
@@ -56,7 +55,7 @@ class LoginWidget(QWidget):
     def login(self, password, trans):
         try:
             check_md5_key(self.conn, password, key_sugar.get('login'))
-        except WrongKeyError:
+        except ValueError:
             self.window.setEnabled(False)
             QMessageBox.information(self.window, trans['title'], trans['tip'])
             self.window.setEnabled(True)
@@ -96,7 +95,7 @@ class ForgetTip(QDialog):
     def verify_key(self, entered_key, trans):
         try:
             check_md5_key(self.conn, entered_key, key_sugar.get('verify'))
-        except WrongKeyError:
+        except ValueError:
             QMessageBox.warning(self, trans['wrong1'], trans['wrong2'])
         else:
             self.accept()
