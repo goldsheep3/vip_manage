@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QApplication
 
 from lib.read import read_yaml
 from ui.application import MainWindow
-from manage.app import main_app as without_ui
+from manage.action import main_app as without_ui
 
 """
 ██╗   ██╗ ██╗ ██████╗           ███╗   ███╗  █████╗  ███╗   ██╗  █████╗   ██████╗  ███████╗

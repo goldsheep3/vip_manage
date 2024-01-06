@@ -3,7 +3,7 @@ from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QGridLayout, QWidget, QDialog, QVBoxLayout, QHBoxLayout, QMessageBox)
 
 from lib.n_qt import LineEdit, Text, PushButton, PushText
-from manage.app import check_md5_key, key_sugar
+from manage.action import check_md5_key, key_sugar
 
 
 class Color(QWidget):
