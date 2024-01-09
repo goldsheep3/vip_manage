@@ -3,7 +3,7 @@ from os.path import join
 from peewee import SqliteDatabase
 
 from lib.read import read_yaml
-from manage.action import check_md5_key, key_sugar
+from manage.action import key_sugar, check_md5_key, search
 
 sql_conn = SqliteDatabase('database.db')
 
@@ -17,32 +17,77 @@ def key_inputer(front: str = '') -> str:
 
 def main_app(_config, i18n):
     login_in(i18n['MLogin'])
+    while True:
+        print()
+        print(i18n['MCommand']['tip1'], i18n['MCommand']['tip2'], sep='\n')
+        command_text = key_inputer('Admin').strip()
+        command = command_text.split()
+        if command[0] == 'login':
+            try:
+                keys = search(command[1], sql_conn)
+            except ValueError:
+                print(i18n['MOperate']['errors']['no_phone'])
+                continue
+            except NameError:
+                pass  # 新用户或临时结算或continue
+            else:
+                if len(keys) == 1:
+                    if keys[0] == 0:
+                        pass  # 临时结算
+                elif len(keys) > 1:
+                    pass  # 选择手机号
+
+        elif command[0] == 'exit':
+            continue
+        elif command[0] == 'leave':
+            raise SystemExit(3)
+        elif command[0] == 'config':
+            continue
+        elif command[0] == 'help':
+            print()
+            for i in i18n['MCommand']['help']:
+                print(i)
+            continue
+        else:
+            print(i18n['MCommand']['no_exist'])
+            continue
 
 
 def login_in(trans) -> int:
     """console登录代码"""
     while True:
-        print(trans['press_key'] + '\n' + trans['without_ui']['forget_pwd'] + '\n' + trans['without_ui']['exit_tip'])
+        # 显示登录选项和用户提示
+        print(trans['press_key'], trans['without_ui']['forget_pwd'], trans['without_ui']['exit_tip'], sep='\n')
+        # 获取用户输入的密码
         pwd = str(key_inputer()).strip()
+        # 检查用户是否想要找回密码
         if pwd == '?' or pwd == '？':
-            print(trans['forget']['tip1'] + '\n' + trans['forget']['tip2'])
+            print(trans['forget']['tip1'], trans['forget']['tip2'], sep='\n')
             key = str(key_inputer()).strip()
             try:
+                # 使用MD5密钥验证密码以进行密码找回
                 check_md5_key(sql_conn, key, key_sugar.get('verify'))
                 print(trans['without_ui']['found'])
                 break
-            except ValueError:
-                print(trans['forget']['verify']['wrong2'] + '\n')
-                continue
+            except NameError as e:
+                if e.args[0] == 32:
+                    print(trans['forget']['verify']['wrong2'] + '\n')
+                    continue
+                raise
+        # 检查用户是否想要退出程序
         elif pwd == 'exit':
             raise SystemExit(3)
         else:
             try:
+                # 使用MD5密钥验证登录密码
                 check_md5_key(sql_conn, pwd, key_sugar.get('login'))
                 break
-            except ValueError:
-                print(trans['wrong']['title'], trans['wrong']['tip'])
-                continue
+            except NameError as e:
+                if e.args[0] == 32:
+                    print(trans['wrong']['title'], trans['wrong']['tip'])
+                    continue
+                raise
+    # 返回0表示成功登录
     return 0
 
 

@@ -62,7 +62,7 @@ class OperateWidget(QWidget):
         try:
             phone_value = int(self.phone_number.text().strip())
         except ValueError:
-            QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_number'])
+            QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_phone'])
             return
 
     def on_exit_button_clicked(self):

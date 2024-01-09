@@ -4,6 +4,17 @@ MMain:
   no_window: 指定是否使用UI界面。
   language: 指定程序所使用的语言，如`zh-CN`、`en_US`等。会覆盖配置文件。
 
+MCommand:
+  tip1: 在下方输入命令以使用。
+  tip2: 输入`help`查询命令指南。
+  help:
+    - 1.`login <手机号>` 登入顾客用户，可输入尾号/11位手机号。`手机号`为0时进入临时结算。
+    - 2.`exit` 退出顾客用户。
+    - 3.`leave` 退出系统。
+    - 4.`config (<配置项>)` 查看系统配置。可查看当前配置和修改规则。忽略`配置项`时显示全部配置的简洁信息。
+    - 5.`config <配置项> <值>` 修改系统配置。
+  no_exist: 不存在这个命令。请重新输入。
+
 MOperate:
   phone_number: 手机号码：
   name: 姓名：
@@ -30,8 +41,11 @@ MOperate:
 
   errors:
     error: 错误！
-    no_number: 请输入合法的手机号！
+    no_phone: 请输入合法的手机号！
     wrong_phone: 请输入正确的手机号！
+    not_found_phone: 无此手机号的数据。
+    nf_4: 请检查输入是否正确。
+    nf_11: 是否要作为新用户注册，或进行临时结算？
 
 MLogin:
   press_key: 请输入管理员密码：
