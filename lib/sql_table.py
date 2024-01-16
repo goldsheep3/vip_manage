@@ -7,7 +7,7 @@ def create_tables_model(conn):
             database = conn
 
     class BaseInfo(BaseModel):
-        phone_number = IntegerField(unique=True, null=False)
+        phone_number = CharField(unique=True, null=False)
         card_id = IntegerField(primary_key=True, unique=True, null=False)
         name = CharField()
         wechat = CharField()

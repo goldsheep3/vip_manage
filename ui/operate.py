@@ -63,12 +63,43 @@ class OperateWidget(QWidget):
 
     def on_search_button_clicked(self):
         try:
-            phone_value = self.phone_number.text().strip()
-            search_answer = search(phone_value, self.conn)
-            print(search_answer)
-        except ValueError:
-            QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_phone'])
-            return
+            try:
+                phone_value = self.phone_number.text().strip()
+                search_answer = search(phone_value, self.conn)
+            except ValueError:
+                QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_phone'])
+                return
+            except NameError as ne:
+                if ne.args[0] == 32:
+                    QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['not_found_phone'])
+                    return
+                elif ne.args[0] == 33:
+                    # 处理是否注册
+                    reg = 0
+                    if reg == 0:
+                        # 注册流程
+                        search_answer = ()
+                    elif reg == 1:
+                        # 临时结算
+                        raise NameError(34)
+                    else:
+                        return
+                else:
+                    raise
+        except NameError as ne:
+            if ne.args[0] == 34:
+                # 临时结算
+                return
+            else:
+                raise
+        search_num = len(search_answer)
+        if search_num == 1:
+            data = search_answer[0]
+            self.edit_line_edit(
+                str(data.card_id), '{:.2f}'.format(data.balance / 100),
+                data.name, data.wechat, data.birthday)
+        else:
+            pass
         self.phone_number.setDisabled(True)  # 登录后不可更改
         # 切换为退出按钮、激活编辑按钮
         self.login_sys.setCurrentIndex(1)
@@ -77,11 +108,7 @@ class OperateWidget(QWidget):
     def on_exit_button_clicked(self):
         # 清空文本框和历史记录
         self.phone_number.clear()
-        self.name.setText('...')
-        self.wechat.setText('...')
-        self.card_id.setText('...')
-        self.birthday.setText('...')
-        self.money_value.clear()
+        self.edit_line_edit('...', '...', '...', '...', '...')
         self.history.clear()
 
         # 禁用按钮和单选框
@@ -100,6 +127,15 @@ class OperateWidget(QWidget):
 
     def on_settlement_button_clicked(self):
         pass
+
+    def edit_line_edit(self, card_id, balance, name='', wechat='', birthday=''):
+        self.name.setText(name)
+        self.wechat.setText(wechat)
+        self.card_id.setText(card_id)
+        self.birthday.setText(birthday)
+        self.money_value.setText(balance)
+        # self.history.addItem(f'{data} {variation}{money_value}CNY {variation_type}[{category}{-note}]')
+        # .addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  <- Sample
 
     def init_ui(self):
         radio_group = QButtonGroup()
