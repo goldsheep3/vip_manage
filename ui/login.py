@@ -39,12 +39,13 @@ class LoginWidget(QWidget):
         base_layout.setRowStretch(4, 1)
 
         password_edit = LineEdit(pwd=True)
-        password_edit.returnPressed.connect(lambda: self.login(password_edit.text(), self.trans['wrong']))
+        login_button = PushButton(self.trans['login'],
+                                  lambda: self.login(password_edit.text(), self.trans['wrong']))
+        password_edit.returnPressed.connect(login_button.click)
 
         base_layout.addWidget(Text(self.trans['press_key']), 1, 1, 1, 2)
         base_layout.addWidget(password_edit, 2, 1)
-        base_layout.addWidget(PushButton(self.trans['login'],
-                                         lambda: self.login(password_edit.text(), self.trans['wrong'])), 2, 2)
+        base_layout.addWidget(login_button, 2, 2)
 
         forget_button = PushText(self.trans['forget_pwd'],
                                  lambda: self.show_forget_tip(self.trans['forget']), align=Qt.AlignCenter)
