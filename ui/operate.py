@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, Q
 from lib.n_qt import LineEdit, Text, DoubleSpinBox, ComboBox, PushButton, RadioButton
 from lib.sql_table import create_tables_model
 from manage.action import search
+from ui.operate_tip import NoFullPhoneTip
 
 
 class OperateWidget(QWidget):
@@ -75,11 +76,12 @@ class OperateWidget(QWidget):
                     return
                 elif ne.args[0] == 33:
                     # 处理是否注册
-                    reg = 0
-                    if reg == 0:
+                    tip = NoFullPhoneTip(self.trans)
+                    reg = tip.exec_()
+                    if reg == 35:
                         # 注册流程
                         search_answer = ()
-                    elif reg == 1:
+                    elif reg == 34:
                         raise NameError(34)  # 临时结算
                     else:
                         return
@@ -173,9 +175,7 @@ class OperateWidget(QWidget):
         info_layout.setColumnStretch(7, 3)
         info_layout.setColumnStretch(8, 9)
         info_layout.setColumnStretch(9, 3)
-        info_layout.setRowStretch(0, 1)
-        info_layout.setRowStretch(1, 1)
-        info_layout.setRowStretch(2, 1)
+        [info_layout.setRowStretch(i, 1) for i in range(3)]
         info_widget = QWidget()
         info_widget.setLayout(info_layout)
 
@@ -210,13 +210,7 @@ class OperateWidget(QWidget):
         operate_layout.setColumnStretch(4, 1)
         operate_layout.setColumnStretch(5, 2)
         operate_layout.setColumnStretch(6, 2)
-        operate_layout.setRowStretch(0, 1)
-        operate_layout.setRowStretch(1, 1)
-        operate_layout.setRowStretch(2, 1)
-        operate_layout.setRowStretch(3, 1)
-        operate_layout.setRowStretch(4, 1)
-        operate_layout.setRowStretch(5, 1)
-        operate_layout.setRowStretch(6, 1)
+        [operate_layout.setRowStretch(i, 1) for i in range(7)]
         operate_layout.setSpacing(5)
         operate_layout.setContentsMargins(25, 15, 25, 15)
 

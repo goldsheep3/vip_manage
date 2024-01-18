@@ -49,6 +49,9 @@ MOperate:
   reg:
     mp: 进行储值
     me: 直接编辑
+    reg: 注册新用户
+    no_reg: 临时顾客结算
+    close: 取消
 
   # 错误提示
   errors:
