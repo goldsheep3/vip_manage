@@ -80,8 +80,7 @@ class OperateWidget(QWidget):
                         # 注册流程
                         search_answer = ()
                     elif reg == 1:
-                        # 临时结算
-                        raise NameError(34)
+                        raise NameError(34)  # 临时结算
                     else:
                         return
                 else:

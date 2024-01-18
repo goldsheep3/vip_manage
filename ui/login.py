@@ -1,19 +1,8 @@
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QGridLayout, QWidget, QDialog, QVBoxLayout, QHBoxLayout, QMessageBox)
 
 from lib.n_qt import LineEdit, Text, PushButton, PushText
 from manage.action import check_md5_key, key_sugar
-
-
-class Color(QWidget):
-
-    def __init__(self, color):
-        super(Color, self).__init__()
-        self.setAutoFillBackground(True)
-        palette = self.palette()
-        palette.setColor(QPalette.Window, QColor(color))
-        self.setPalette(palette)
 
 
 class LoginWidget(QWidget):
@@ -25,7 +14,7 @@ class LoginWidget(QWidget):
         self.window = window
         self.trans = i18n['MLogin']
 
-        base_layout = QGridLayout()
+        base_layout = QGridLayout(self)
         base_layout.setSpacing(10)
         base_layout.setContentsMargins(50, 50, 50, 50)
         base_layout.setColumnStretch(0, 12)
@@ -51,8 +40,6 @@ class LoginWidget(QWidget):
                                  lambda: self.show_forget_tip(self.trans['forget']), align=Qt.AlignCenter)
         base_layout.addWidget(forget_button, 4, 1, 1, 2)
 
-        self.setLayout(base_layout)
-
     def login(self, password, trans):
         try:
             check_md5_key(self.conn, password, key_sugar.get('login'))
@@ -77,7 +64,7 @@ class ForgetTip(QDialog):
         self.setFixedSize(300, 150)
         self.conn = conn
 
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
 
         layout.addWidget(Text(trans['tip1']))
         layout.addWidget(Text(trans['tip2']))
@@ -90,8 +77,6 @@ class ForgetTip(QDialog):
                                            lambda: self.verify_key(key_line_edit.text(), trans)))
         button_layout.addWidget(PushButton(trans['button2'], self.reject))
         layout.addLayout(button_layout)
-
-        self.setLayout(layout)
 
     def verify_key(self, entered_key, trans):
         try:

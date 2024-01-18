@@ -45,6 +45,11 @@ MOperate:
   money_down: 消费
   # 默认折扣
 
+  # 额外弹窗
+  reg:
+    mp: 进行储值
+    me: 直接编辑
+
   # 错误提示
   errors:
     error: 错误！
