@@ -16,29 +16,41 @@ MCommand:
   no_exist: 不存在这个命令。请重新输入。
 
 MOperate:
+  # 会员信息
   phone_number: 手机号码：
   name: 姓名：
   wechat: 微信：
   card_id: 卡号：
   birthday: 生日：
   money: 账户余额：
-
+  # 按钮
   search: 搜索
   exit: 退出
-
+  modify: 修改
+  settlement: 结算
+  now_settlement: 直接结算
+  order_settlement: 添加并结算
+  add_order: 添加交易
+  # 订单显示
+  history: 历史订单
+  order: 待结算订单
+  # 操作区
   operate: 操作
-  history: 近期操作历史
-  # 数组1为单选按钮，数组2为操作按钮
-  modify_info:
-  - 修改信息
-  - 编辑
-  money_plus:
-  - 储值
-  - 储入
-  money_down:
-  - 消费
-  - 消费
+  now_operate: '当前交易:'
+  category: '交易信息:'
+  pay1: '交易金额:'
+  pay2: '交易优惠:'
+  pay3: '实际金额:'
+  money_plus: 储值
+  money_down: 消费
+  # 默认折扣
 
+  # 额外弹窗
+  reg:
+    mp: 进行储值
+    me: 直接编辑
+
+  # 错误提示
   errors:
     error: 错误！
     no_phone: 请输入合法的手机号！

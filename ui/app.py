@@ -1,19 +1,9 @@
 from peewee import SqliteDatabase
-from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QStackedWidget)
 
+from lib.n_qt import Text
 from ui.operate import OperateWidget
 from ui.login import LoginWidget
-
-
-class Color(QWidget):
-
-    def __init__(self, color):
-        super(Color, self).__init__()
-        self.setAutoFillBackground(True)
-        palette = self.palette()
-        palette.setColor(QPalette.Window, QColor(color))
-        self.setPalette(palette)
 
 
 class MainWindow(QMainWindow):
@@ -39,7 +29,7 @@ class MainWindow(QMainWindow):
         bg_layout = QVBoxLayout()  # 分隔上标题和下操作
         bg_layout.setSpacing(0)
         bg_layout.setContentsMargins(0, 0, 0, 0)
-        bg_layout.addWidget(Color('red'), 2)
+        bg_layout.addWidget(Text(''), 2)
         bg_layout.addWidget(stacked_widget, 13)
         bg_widget = QWidget()
         bg_widget.setLayout(bg_layout)

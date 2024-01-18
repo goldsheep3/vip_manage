@@ -5,7 +5,7 @@ from sys import argv, exit
 from PySide6.QtWidgets import QApplication
 
 from lib.read import read_yaml
-from ui.application import MainWindow
+from ui.app import MainWindow
 from manage.app import main_app as without_ui
 
 """

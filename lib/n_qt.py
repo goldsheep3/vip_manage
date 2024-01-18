@@ -1,5 +1,6 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox)
+from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox,
+                               QAbstractSpinBox)
 
 
 class Text(QLabel):
@@ -71,7 +72,11 @@ class ComboBox(QComboBox):
 
 
 class DoubleSpinBox(QDoubleSpinBox):
-    def __init__(self, read_only=False):
+    def __init__(self, no_buttons=False, read_only=False):
         super().__init__()
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        if no_buttons:
+            # noinspection PyUnresolvedReferences
+            self.setButtonSymbols(QAbstractSpinBox.NoButtons)
         if read_only:
             self.setEnabled(False)

@@ -1,9 +1,10 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget,
-                               QMessageBox)
+                               QMessageBox, QStackedWidget, QToolBox)
 
 from lib.n_qt import LineEdit, Text, DoubleSpinBox, ComboBox, PushButton, RadioButton
 from lib.sql_table import create_tables_model
+from manage.action import search
 
 
 class OperateWidget(QWidget):
@@ -29,65 +30,118 @@ class OperateWidget(QWidget):
         self.history.setWordWrap(True)
         # .addItem(f'{data} {variation}{money_value}CNY {variation_type}[{category}{-note}]')
         # .addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  <- Sample
-        self.money_plus_num = DoubleSpinBox(True)
-        self.money_down_num = DoubleSpinBox(True)
-        self.money_down_category = ComboBox(True)
-        self.money_down_note = LineEdit(True)
+        self.order = QListWidget()
+        self.order.setWordWrap(True)
+
+        self.trade_category = ComboBox(True)
+        self.trade_note = LineEdit(True)
+        self.amount = DoubleSpinBox(True, True)
+        self.discount = DoubleSpinBox(True, True)
+        self.paid_amount = DoubleSpinBox(True, True)
 
         self.button_search = PushButton(self.trans['search'], self.on_search_button_clicked)
-        self.button_exit = PushButton(self.trans['exit'], self.on_exit_button_clicked, True)
-        self.button_modify = PushButton(self.trans['modify_info'][1],
-                                        lambda: print(21), True)
-        self.button_money_plus = PushButton(self.trans['money_plus'][1],
-                                            lambda: print(23), True)
-        self.button_money_down = PushButton(self.trans['money_down'][1],
-                                            lambda: print(24), True)
+        self.button_exit = PushButton(self.trans['exit'], self.on_exit_button_clicked)
+        self.button_modify = PushButton(self.trans['modify'], self.on_modify_button_clicked, True)
+        self.button_settlement = PushButton(self.trans['settlement'], self.on_settlement_button_clicked, True)
 
-        self.radio_modify = RadioButton(self.trans['modify_info'][0],
-                                        lambda: print(12), True)
-        self.radio_money_plus = RadioButton(self.trans['money_plus'][0],
+        self.radio_money_plus = RadioButton(self.trans['money_plus'],
                                             lambda: print(14), True)
-        self.radio_money_down = RadioButton(self.trans['money_down'][0],
+        self.radio_money_down = RadioButton(self.trans['money_down'],
                                             lambda: print(15), True)
-        radio_group = QButtonGroup()
-        radio_group.setExclusive(True)
-        radio_group.addButton(self.radio_modify)
-        radio_group.addButton(self.radio_money_plus)
-        radio_group.addButton(self.radio_money_down)
+
+        self.phone_number.returnPressed.connect(self.button_search.clicked)
+
+        self.login_sys = QStackedWidget()
+        self.login_sys.setContentsMargins(0, 0, 0, 0)
+        self.login_sys.addWidget(self.button_search)
+        self.login_sys.addWidget(self.button_exit)
+
+        self.left_tbox = QToolBox()
 
         # 基础显示组件定义
         self.init_ui()
 
     def on_search_button_clicked(self):
         try:
-            phone_value = int(self.phone_number.text().strip())
-        except ValueError:
-            QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_phone'])
-            return
+            try:
+                phone_value = self.phone_number.text().strip()
+                search_answer = search(phone_value, self.conn)
+            except ValueError:
+                QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_phone'])
+                return
+            except NameError as ne:
+                if ne.args[0] == 32:
+                    QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['not_found_phone'])
+                    return
+                elif ne.args[0] == 33:
+                    # 处理是否注册
+                    reg = 0
+                    if reg == 0:
+                        # 注册流程
+                        search_answer = ()
+                    elif reg == 1:
+                        raise NameError(34)  # 临时结算
+                    else:
+                        return
+                else:
+                    raise
+        except NameError as ne:
+            if ne.args[0] == 34:
+                # 临时结算
+                return
+            else:
+                raise
+        search_num = len(search_answer)
+        if search_num == 1:
+            data = search_answer[0]
+            self.edit_line_edit(
+                str(data.card_id), '{:.2f}'.format(data.balance / 100),
+                data.name, data.wechat, data.birthday)
+        else:
+            pass
+        self.phone_number.setDisabled(True)  # 登录后不可更改
+        # 切换为退出按钮、激活编辑按钮
+        self.login_sys.setCurrentIndex(1)
+        self.button_modify.setEnabled(True)
 
     def on_exit_button_clicked(self):
         # 清空文本框和历史记录
         self.phone_number.clear()
-        self.name.setText('...')
-        self.wechat.setText('...')
-        self.card_id.setText('...')
-        self.birthday.setText('...')
-        self.money_value.clear()
+        self.edit_line_edit('...', '...', '...', '...', '...')
         self.history.clear()
 
         # 禁用按钮和单选框
-        self.button_exit.setDisabled(True)
         self.button_modify.setDisabled(True)
-        self.button_money_plus.setDisabled(True)
-        self.button_money_down.setDisabled(True)
-        self.radio_modify.setDisabled(True)
         self.radio_money_plus.setDisabled(True)
         self.radio_money_down.setDisabled(True)
 
-        # 将焦点移动到self.phone_number
+        # 恢复手机号码输入框
+        self.phone_number.setEnabled(True)
+        # 切换搜索按钮、取消激活编辑按钮、移动焦点
+        self.login_sys.setCurrentIndex(0)
         self.phone_number.setFocus()
 
+    def on_modify_button_clicked(self):
+        pass
+
+    def on_settlement_button_clicked(self):
+        pass
+
+    def edit_line_edit(self, card_id, balance, name='', wechat='', birthday=''):
+        self.name.setText(name)
+        self.wechat.setText(wechat)
+        self.card_id.setText(card_id)
+        self.birthday.setText(birthday)
+        self.money_value.setText(balance)
+        # self.history.addItem(f'{data} {variation}{money_value}CNY {variation_type}[{category}{-note}]')
+        # .addItem('2023.01.28 -300.00CNY 消费[服务1-测试]')  <- Sample
+
     def init_ui(self):
+        radio_group = QButtonGroup()
+        radio_group.setExclusive(True)
+        radio_group.addButton(self.radio_money_plus)
+        radio_group.addButton(self.radio_money_down)
+
         info_layout = QGridLayout()  # 基本信息显示Grid
         info_layout.setSpacing(0)
         info_layout.setContentsMargins(0, 0, 0, 0)
@@ -98,8 +152,8 @@ class OperateWidget(QWidget):
         info_layout.addWidget(Text(self.trans['wechat']), 2, 0)
         info_layout.addWidget(self.wechat, 2, 1)
 
-        info_layout.addWidget(self.button_search, 0, 4)
-        info_layout.addWidget(self.button_exit, 0, 5)
+        info_layout.addWidget(self.login_sys, 0, 4)
+        info_layout.addWidget(self.button_modify, 0, 5)
         info_layout.addWidget(Text(self.trans['card_id']), 1, 3)
         info_layout.addWidget(self.card_id, 1, 4, 1, 2)
         info_layout.addWidget(Text(self.trans['birthday']), 2, 3)
@@ -126,29 +180,36 @@ class OperateWidget(QWidget):
         info_widget.setLayout(info_layout)
 
         operate_layout = QGridLayout()
-        operate_layout.addWidget(self.radio_modify, 0, 0, 1, 3)
-        operate_layout.addWidget(self.button_modify, 0, 5)
 
-        operate_layout.addWidget(self.radio_money_plus, 2, 0, 1, 3)
-        operate_layout.addWidget(Text('＋', align=Qt.AlignRight | Qt.AlignVCenter), 3, 0)
-        operate_layout.addWidget(self.money_plus_num, 3, 1, 1, 2)
-        operate_layout.addWidget(Text('CNY'), 3, 3)
-        operate_layout.addWidget(self.button_money_plus, 3, 5)
+        operate_layout.addWidget(Text(self.trans['now_operate']), 0, 0)
+        operate_layout.addWidget(self.radio_money_plus, 0, 1, 1, 1)
+        operate_layout.addWidget(self.radio_money_down, 0, 2, 1, 2)
 
-        operate_layout.addWidget(self.radio_money_down, 5, 0, 1, 3)
-        operate_layout.addWidget(self.money_down_category, 6, 1, 1, 2)
-        operate_layout.addWidget(self.money_down_note, 6, 3, 1, 2)
-        operate_layout.addWidget(Text('－', align=Qt.AlignRight | Qt.AlignVCenter), 7, 0)
-        operate_layout.addWidget(self.money_down_num, 7, 1, 1, 2)
-        operate_layout.addWidget(Text('CNY'), 7, 3)
-        operate_layout.addWidget(self.button_money_down, 7, 5)
+        operate_layout.addWidget(Text(self.trans['category']), 1, 0)
+        operate_layout.addWidget(self.trade_category, 1, 1)
+        operate_layout.addWidget(self.trade_note, 1, 2, 1, 2)
+        operate_layout.addWidget(Text(self.trans['pay1']), 2, 0)
+        operate_layout.addWidget(self.amount, 2, 1)
+        operate_layout.addWidget(Text('CNY'), 2, 2)
+        operate_layout.addWidget(Text(self.trans['pay2']), 3, 0)
+        operate_layout.addWidget(self.discount, 3, 1)
+        operate_layout.addWidget(Text('CNY'), 3, 2)
+        operate_layout.addWidget(Text('3,3'), 3, 3, 1, 2)
+        operate_layout.addWidget(Text('3,4'), 3, 5)
+        operate_layout.addWidget(Text('3,5'), 3, 6)
+        operate_layout.addWidget(Text(self.trans['pay3']), 4, 0)
+        operate_layout.addWidget(self.paid_amount, 4, 1)
+        operate_layout.addWidget(Text('CNY'), 4, 2)
+        operate_layout.addWidget(Text('6,2'), 6, 2, 1, 3)
+        operate_layout.addWidget(Text('6,5'), 6, 5, 1, 2)
 
-        operate_layout.setColumnStretch(0, 1)
-        operate_layout.setColumnStretch(1, 4)
-        operate_layout.setColumnStretch(2, 4)
-        operate_layout.setColumnStretch(3, 4)
-        operate_layout.setColumnStretch(4, 4)
-        operate_layout.setColumnStretch(5, 5)
+        operate_layout.setColumnStretch(0, 2)
+        operate_layout.setColumnStretch(1, 3)
+        operate_layout.setColumnStretch(2, 2)
+        operate_layout.setColumnStretch(3, 1)
+        operate_layout.setColumnStretch(4, 1)
+        operate_layout.setColumnStretch(5, 2)
+        operate_layout.setColumnStretch(6, 2)
         operate_layout.setRowStretch(0, 1)
         operate_layout.setRowStretch(1, 1)
         operate_layout.setRowStretch(2, 1)
@@ -156,27 +217,30 @@ class OperateWidget(QWidget):
         operate_layout.setRowStretch(4, 1)
         operate_layout.setRowStretch(5, 1)
         operate_layout.setRowStretch(6, 1)
-        operate_layout.setRowStretch(7, 1)
-
-        operate_layout.setSpacing(3)
+        operate_layout.setSpacing(5)
         operate_layout.setContentsMargins(25, 15, 25, 15)
+
         operate_gbox = QGroupBox()
         operate_gbox.setLayout(operate_layout)
         operate_gbox.setTitle(self.trans['operate'])
+        # operate_gbox.setStyleSheet('QWidget {border: 2px solid red;}')
 
-        history_layout = QVBoxLayout()
-        history_layout.setSpacing(0)
-        history_layout.setContentsMargins(5, 5, 5, 5)
-        history_layout.addWidget(self.history)
+        order_layout = QVBoxLayout()
+        order_layout.setSpacing(5)
+        order_layout.setContentsMargins(0, 0, 0, 0)
+        order_layout.addWidget(self.order, 8)
+        order_layout.addWidget(self.button_settlement, 1)
+        order_widget = QWidget()
+        order_widget.setLayout(order_layout)
 
-        history_gbox = QGroupBox()
-        history_gbox.setLayout(history_layout)
-        history_gbox.setTitle(self.trans['history'])
+        self.left_tbox.addItem(order_widget, self.trans['order'])
+        self.left_tbox.addItem(self.history, self.trans['history'])
+        self.left_tbox.setCurrentIndex(1)
 
         down_layout = QHBoxLayout()  # 分隔最近明细和操作区域
         down_layout.setSpacing(15)
         down_layout.setContentsMargins(0, 0, 0, 0)
-        down_layout.addWidget(history_gbox, 4)
+        down_layout.addWidget(self.left_tbox, 4)
         down_layout.addWidget(operate_gbox, 7)
         down_widget = QWidget()
         down_widget.setLayout(down_layout)

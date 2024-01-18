@@ -11,7 +11,7 @@ key_sugar = {
 
 def search(phone: str,
            conn: SqliteDatabase) -> tuple:
-    """数据库手机号搜索代码，返回卡号元组。"""
+    """数据库手机号搜索代码，返回数据结果元组。"""
 
     # 定义手机号码的正则表达式模式
     phone_number_pattern = comp(r'^1[3456789]\d{9}$')
@@ -24,24 +24,20 @@ def search(phone: str,
         if len(matching_items) == 0:
             # 无匹配记录
             raise NameError(32)
-        elif len(matching_items) == 1:
-            # 一条匹配记录
-            return (matching_items[0],)
-        elif len(matching_items) > 1:
-            # 多条匹配记录
-            return tuple(matching_items)
+        else:
+            return matching_items
     elif phone_number_pattern.match(phone):
         # 如果手机号符合正则表达式模式，通过完整手机号进行查询
         matching_items = BaseInfo.select().where(BaseInfo.phone_number == phone)
         if len(matching_items) == 0:
             # 无匹配记录
-            raise NameError(32, phone)
+            raise NameError(33, phone)
         elif len(matching_items) == 1:
             # 一条匹配记录
-            return (matching_items[0],)
+            return matching_items
     elif phone == '0':
         # 临时结算
-        return (0,)
+        raise NameError(34)
     else:
         raise ValueError(164)
 
@@ -68,5 +64,3 @@ def check_md5_key(conn: SqliteDatabase,
         return 0
     else:
         raise ValueError(42)
-
-
