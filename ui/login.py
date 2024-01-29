@@ -1,7 +1,7 @@
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import (QGridLayout, QWidget, QDialog, QVBoxLayout, QHBoxLayout, QMessageBox)
+from PySide6.QtWidgets import (QWidget, QDialog, QVBoxLayout, QHBoxLayout, QMessageBox)
 
-from lib.n_qt import LineEdit, Text, PushButton, PushText
+from lib.n_qt import LineEdit, Text, PushButton, PushText, GridLayout
 from manage.action import check_md5_key, key_sugar
 
 
@@ -14,18 +14,11 @@ class LoginWidget(QWidget):
         self.window = window
         self.trans = i18n['MLogin']
 
-        base_layout = QGridLayout(self)
+        base_layout = GridLayout(self)
         base_layout.setSpacing(10)
         base_layout.setContentsMargins(50, 50, 50, 50)
-        base_layout.setColumnStretch(0, 12)
-        base_layout.setColumnStretch(1, 11)
-        base_layout.setColumnStretch(2, 1)
-        base_layout.setColumnStretch(3, 12)
-        base_layout.setRowStretch(0, 3)
-        base_layout.setRowStretch(1, 1)
-        base_layout.setRowStretch(2, 1)
-        base_layout.setRowStretch(3, 6)
-        base_layout.setRowStretch(4, 1)
+        base_layout.setAllColumnStretch([12, 11, 1, 12])
+        base_layout.setAllRowStretch([3, 1, 1, 6, 1])
 
         password_edit = LineEdit(pwd=True)
         login_button = PushButton(self.trans['login'],

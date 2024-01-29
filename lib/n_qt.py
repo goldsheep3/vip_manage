@@ -1,6 +1,19 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox,
-                               QAbstractSpinBox)
+                               QAbstractSpinBox, QGridLayout, QSpinBox)
+
+
+class GridLayout(QGridLayout):
+
+    def setAllColumnStretch(self, stretch: list | int):
+        if isinstance(stretch, int):
+            stretch = [1] * stretch
+        [self.setColumnStretch(i, j) for i, j in enumerate(stretch)]
+
+    def setAllRowStretch(self, stretch: list | int):
+        if isinstance(stretch, int):
+            stretch = [1] * stretch
+        [self.setRowStretch(i, j) for i, j in enumerate(stretch)]
 
 
 class Text(QLabel):
@@ -71,10 +84,25 @@ class ComboBox(QComboBox):
             self.setEnabled(False)
 
 
-class DoubleSpinBox(QDoubleSpinBox):
-    def __init__(self, no_buttons=False, read_only=False):
+class SpinBox(QSpinBox):
+    def __init__(self, value: int = 0, no_buttons=False, read_only=False):
         super().__init__()
+        self.setValue(value)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setAlignment(Qt.AlignRight)
+        if no_buttons:
+            # noinspection PyUnresolvedReferences
+            self.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        if read_only:
+            self.setEnabled(False)
+
+
+class DoubleSpinBox(QDoubleSpinBox):
+    def __init__(self, value: float = 0.00, no_buttons=False, read_only=False):
+        super().__init__()
+        self.setValue(value)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setAlignment(Qt.AlignRight)
         if no_buttons:
             # noinspection PyUnresolvedReferences
             self.setButtonSymbols(QAbstractSpinBox.NoButtons)

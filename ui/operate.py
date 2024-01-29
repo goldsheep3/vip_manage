@@ -1,11 +1,11 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget,
+from PySide6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QButtonGroup, QListWidget,
                                QMessageBox, QStackedWidget, QToolBox)
 
-from lib.n_qt import LineEdit, Text, DoubleSpinBox, ComboBox, PushButton, RadioButton
+from lib.n_qt import LineEdit, Text, DoubleSpinBox, SpinBox, ComboBox, PushButton, RadioButton, GridLayout
 from lib.sql_table import create_tables_model
 from manage.action import search
-from ui.operate_tip import NoFullPhoneTip
+from ui.operate_tip import NoFullPhoneTip, PayGridLayout
 
 
 class OperateWidget(QWidget):
@@ -36,19 +36,20 @@ class OperateWidget(QWidget):
 
         self.trade_category = ComboBox(True)
         self.trade_note = LineEdit(True)
-        self.amount = DoubleSpinBox(True, True)
-        self.discount = DoubleSpinBox(True, True)
-        self.paid_amount = DoubleSpinBox(True, True)
+        self.amount = DoubleSpinBox(0, True, True)
+        self.discount1 = SpinBox(10, True, True)
+        self.discount2 = DoubleSpinBox(0, True, True)
+        self.paid_amount = DoubleSpinBox(0, True, True)
 
         self.button_search = PushButton(self.trans['search'], self.on_search_button_clicked)
         self.button_exit = PushButton(self.trans['exit'], self.on_exit_button_clicked)
         self.button_modify = PushButton(self.trans['modify'], self.on_modify_button_clicked, True)
         self.button_settlement = PushButton(self.trans['settlement'], self.on_settlement_button_clicked, True)
 
-        self.radio_money_plus = RadioButton(self.trans['money_plus'],
-                                            lambda: print(14), True)
         self.radio_money_down = RadioButton(self.trans['money_down'],
                                             lambda: print(15), True)
+        self.radio_money_plus = RadioButton(self.trans['money_plus'],
+                                            lambda: print(14), True)
 
         self.phone_number.returnPressed.connect(self.button_search.clicked)
 
@@ -67,6 +68,7 @@ class OperateWidget(QWidget):
             try:
                 phone_value = self.phone_number.text().strip()
                 search_answer = search(phone_value, self.conn)
+                # 返回整个数据
             except ValueError:
                 QMessageBox.critical(self, self.trans['errors']['error'], self.trans['errors']['no_phone'])
                 return
@@ -77,9 +79,11 @@ class OperateWidget(QWidget):
                 elif ne.args[0] == 33:
                     # 处理是否注册
                     tip = NoFullPhoneTip(self.trans)
-                    reg = tip.exec_()
+                    tip.exec_()
+                    reg = tip.result_Value
                     if reg == 35:
                         # 注册流程
+                        raise SystemError('DEBUG!')
                         search_answer = ()
                     elif reg == 34:
                         raise NameError(34)  # 临时结算
@@ -90,6 +94,7 @@ class OperateWidget(QWidget):
         except NameError as ne:
             if ne.args[0] == 34:
                 # 临时结算
+                raise SystemError('DEBUG!')
                 return
             else:
                 raise
@@ -105,6 +110,13 @@ class OperateWidget(QWidget):
         # 切换为退出按钮、激活编辑按钮
         self.login_sys.setCurrentIndex(1)
         self.button_modify.setEnabled(True)
+        # 激活操作区
+        self.radio_money_plus.setEnabled(True)
+        self.radio_money_down.setEnabled(True)
+        self.money_plus_area(True)
+
+    def money_plus_area(self, state):
+        pass
 
     def on_exit_button_clicked(self):
         # 清空文本框和历史记录
@@ -144,7 +156,7 @@ class OperateWidget(QWidget):
         radio_group.addButton(self.radio_money_plus)
         radio_group.addButton(self.radio_money_down)
 
-        info_layout = QGridLayout()  # 基本信息显示Grid
+        info_layout = GridLayout()  # 基本信息显示Grid
         info_layout.setSpacing(0)
         info_layout.setContentsMargins(0, 0, 0, 0)
         info_layout.addWidget(Text(self.trans['phone_number']), 0, 0)
@@ -165,54 +177,30 @@ class OperateWidget(QWidget):
         info_layout.addWidget(self.money_value, 1, 8, 2, 1)
         info_layout.addWidget(Text('CNY'), 2, 9)
 
-        info_layout.setColumnStretch(0, 6)
-        info_layout.setColumnStretch(1, 12)
-        info_layout.setColumnStretch(2, 1)
-        info_layout.setColumnStretch(3, 6)
-        info_layout.setColumnStretch(4, 6)
-        info_layout.setColumnStretch(5, 6)
-        info_layout.setColumnStretch(6, 1)
-        info_layout.setColumnStretch(7, 3)
-        info_layout.setColumnStretch(8, 9)
-        info_layout.setColumnStretch(9, 3)
-        [info_layout.setRowStretch(i, 1) for i in range(3)]
-        info_widget = QWidget()
-        info_widget.setLayout(info_layout)
+        info_layout.setAllColumnStretch([6, 12, 1, 6, 6, 6, 1, 3, 9, 3])
+        info_layout.setAllRowStretch(3)
 
-        operate_layout = QGridLayout()
+        choose_layout = QHBoxLayout()
+        choose_layout.addWidget(Text(self.trans['now_operate']), 1)
+        choose_layout.addWidget(self.radio_money_down, 3)
+        choose_layout.addWidget(self.radio_money_plus, 3)
+        choose_layout.addWidget(Text(''), 1)
+        pay_layout = PayGridLayout(self.trans,
+                                   self.trade_category,
+                                   self.trade_note,
+                                   self.amount,
+                                   self.discount1,
+                                   self.discount2,
+                                   self.paid_amount,
+                                   PushButton('', print))
+        pay_layout.setAllColumnStretch([2, 3, 2, 1, 1, 2, 2])
+        pay_layout.setAllRowStretch(7)
 
-        operate_layout.addWidget(Text(self.trans['now_operate']), 0, 0)
-        operate_layout.addWidget(self.radio_money_plus, 0, 1, 1, 1)
-        operate_layout.addWidget(self.radio_money_down, 0, 2, 1, 2)
-
-        operate_layout.addWidget(Text(self.trans['category']), 1, 0)
-        operate_layout.addWidget(self.trade_category, 1, 1)
-        operate_layout.addWidget(self.trade_note, 1, 2, 1, 2)
-        operate_layout.addWidget(Text(self.trans['pay1']), 2, 0)
-        operate_layout.addWidget(self.amount, 2, 1)
-        operate_layout.addWidget(Text('CNY'), 2, 2)
-        operate_layout.addWidget(Text(self.trans['pay2']), 3, 0)
-        operate_layout.addWidget(self.discount, 3, 1)
-        operate_layout.addWidget(Text('CNY'), 3, 2)
-        operate_layout.addWidget(Text('3,3'), 3, 3, 1, 2)
-        operate_layout.addWidget(Text('3,4'), 3, 5)
-        operate_layout.addWidget(Text('3,5'), 3, 6)
-        operate_layout.addWidget(Text(self.trans['pay3']), 4, 0)
-        operate_layout.addWidget(self.paid_amount, 4, 1)
-        operate_layout.addWidget(Text('CNY'), 4, 2)
-        operate_layout.addWidget(Text('6,2'), 6, 2, 1, 3)
-        operate_layout.addWidget(Text('6,5'), 6, 5, 1, 2)
-
-        operate_layout.setColumnStretch(0, 2)
-        operate_layout.setColumnStretch(1, 3)
-        operate_layout.setColumnStretch(2, 2)
-        operate_layout.setColumnStretch(3, 1)
-        operate_layout.setColumnStretch(4, 1)
-        operate_layout.setColumnStretch(5, 2)
-        operate_layout.setColumnStretch(6, 2)
-        [operate_layout.setRowStretch(i, 1) for i in range(7)]
+        operate_layout = QVBoxLayout()
+        operate_layout.addLayout(choose_layout, 1)
+        operate_layout.addLayout(pay_layout, 7)
         operate_layout.setSpacing(5)
-        operate_layout.setContentsMargins(25, 15, 25, 15)
+        operate_layout.setContentsMargins(15, 5, 5, 0)
 
         operate_gbox = QGroupBox()
         operate_gbox.setLayout(operate_layout)
@@ -236,13 +224,11 @@ class OperateWidget(QWidget):
         down_layout.setContentsMargins(0, 0, 0, 0)
         down_layout.addWidget(self.left_tbox, 4)
         down_layout.addWidget(operate_gbox, 7)
-        down_widget = QWidget()
-        down_widget.setLayout(down_layout)
 
         base_layout = QVBoxLayout()  # 分隔操作区上下
         base_layout.setSpacing(10)
         base_layout.setContentsMargins(50, 25, 50, 25)
-        base_layout.addWidget(info_widget, 1)
-        base_layout.addWidget(down_widget, 3)
+        base_layout.addLayout(info_layout, 1)
+        base_layout.addLayout(down_layout, 3)
 
         self.setLayout(base_layout)

@@ -9,6 +9,11 @@ key_sugar = {
 }
 
 
+class NormalPay:
+    def __init__(self):
+        pass
+
+
 def search(phone: str,
            conn: SqliteDatabase) -> tuple:
     """数据库手机号搜索代码，返回数据结果元组。"""

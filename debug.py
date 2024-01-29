@@ -1,55 +1,30 @@
-from peewee import SqliteDatabase
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QStackedWidget)
 import argparse
 
 from os.path import join
 from sys import argv, exit
+
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication
 
 from lib.read import read_yaml
-from lib.n_qt import Text
 from manage.app import main_app as without_ui
-from ui.operate import OperateWidget
-from ui.login import LoginWidget
+from ui.app import MainWindow
 
 
-class MainWindow(QMainWindow):
-    def __init__(self, config, i18n):
-        super().__init__()
-        self.setGeometry(550, 250, 800, 600)
-        self.setMinimumSize(600, 450)
+class DBGMainWindow(MainWindow):
+    login_successful = Signal()
 
-        self.setWindowTitle(f"{config['organization']} - {i18n['title']}")
-
-        conn = SqliteDatabase('database.db')
-
-        operate_widget = OperateWidget(i18n, conn, self)
-        login_widget = LoginWidget(i18n, conn, self)
-
-        stacked_widget = QStackedWidget()
-        stacked_widget.setContentsMargins(0, 0, 0, 0)
-
-        stacked_widget.addWidget(login_widget)
-        stacked_widget.addWidget(operate_widget)
-        login_widget.login_successful.connect(lambda: stacked_widget.setCurrentIndex(1))
-
-        bg_layout = QVBoxLayout()  # 分隔上标题和下操作
-        bg_layout.setSpacing(0)
-        bg_layout.setContentsMargins(0, 0, 0, 0)
-        bg_layout.addWidget(Text(''), 2)
-        bg_layout.addWidget(stacked_widget, 13)
-        bg_widget = QWidget()
-        bg_widget.setLayout(bg_layout)
-
-        self.setCentralWidget(bg_widget)
-
+    def __init__(self, conf, i18n_):
+        super().__init__(conf, i18n_)
+        print(1)
         # DEBUG
-        stacked_widget.setCurrentIndex(1)
+        self.login_successful.emit()  # 发送切换Stacked信号
+        self.setFixedSize(600, 450)
 
 
 def with_ui(conf, translation):
     app = QApplication(argv)
-    window = MainWindow(conf, translation)
+    window = DBGMainWindow(conf, translation)
     window.show()
     exit(app.exec())
 

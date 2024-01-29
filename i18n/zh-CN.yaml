@@ -39,11 +39,12 @@ MOperate:
   now_operate: '当前交易:'
   category: '交易信息:'
   pay1: '交易金额:'
-  pay2: '交易优惠:'
-  pay3: '实际金额:'
+  pay2: '交易折扣:'
+  pay3: '立减金额:'
+  pay4: '实际金额:'
   money_plus: 储值
   money_down: 消费
-  # 默认折扣
+  zhe: 折+
 
   # 额外弹窗
   reg:
