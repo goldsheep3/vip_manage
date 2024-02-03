@@ -1,9 +1,10 @@
+from sys import argv
+
 from PySide6.QtCore import Signal
 from peewee import SqliteDatabase
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QStackedWidget)
+from PySide6.QtWidgets import (QMainWindow, QStackedWidget, QApplication)
 import qdarkstyle
 
-from lib.n_qt import Text
 from ui.login import LoginWidget
 from ui.operate import OperateWidget
 
@@ -30,15 +31,14 @@ class MainWindow(QMainWindow):
         stacked_widget.addWidget(login_widget)
         stacked_widget.addWidget(operate_widget)
 
-        bg_layout = QVBoxLayout()  # 分隔上标题和下操作
-        bg_layout.setSpacing(0)
-        bg_layout.setContentsMargins(0, 0, 0, 0)
-        bg_layout.addWidget(Text(''), 1)
-        bg_layout.addWidget(stacked_widget, 10)
-        bg_widget = QWidget()
-        bg_widget.setLayout(bg_layout)
-
         login_widget.login_successful.connect(lambda: stacked_widget.setCurrentIndex(1))
         self.login_successful.connect(lambda: stacked_widget.setCurrentIndex(1))
 
-        self.setCentralWidget(bg_widget)
+        self.setCentralWidget(stacked_widget)
+
+
+def main_app(conf, translation):
+    app = QApplication(argv)
+    window = MainWindow(conf, translation)
+    window.show()
+    exit(app.exec())

@@ -16,10 +16,8 @@ class DBGMainWindow(MainWindow):
 
     def __init__(self, conf, i18n_):
         super().__init__(conf, i18n_)
-        print(1)
-        # DEBUG
         self.login_successful.emit()  # 发送切换Stacked信号
-        self.setFixedSize(600, 450)
+        self.setGeometry(240, 60, int(1200/1.5), int(900/1.5))
 
 
 def with_ui(conf, translation):

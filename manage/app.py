@@ -3,7 +3,7 @@ from os.path import join
 from peewee import SqliteDatabase
 
 from lib.read import read_yaml
-from manage.action import key_sugar, check_md5_key, search
+from manage.action import key_sugar, check_md5_key, phone_search
 
 sql_conn = SqliteDatabase('database.db')
 
@@ -24,7 +24,7 @@ def main_app(_config, i18n):
         command = command_text.split()
         if command[0] == 'login':
             try:
-                keys = search(command[1], sql_conn)
+                keys = phone_search(command[1], sql_conn)
             except ValueError:
                 print(i18n['MOperate']['errors']['no_phone'])
                 continue
