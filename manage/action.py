@@ -1,3 +1,4 @@
+from datetime import datetime
 from hashlib import md5
 from re import compile as comp
 from peewee import SqliteDatabase, fn
@@ -63,9 +64,40 @@ def phone_search(phone: str,
 
 
 def get_history(card_id: int,
-                conn: SqliteDatabase) -> tuple:
-    a = []
-    return tuple(a)
+                conn: SqliteDatabase,
+                back_sort = False) -> tuple:
+    """获取指定卡号的历史记录"""
+
+    # 获取模型
+    History = create_tables_model(conn)[1]
+
+    # 查询指定卡号的历史记录
+    history_items = History.select().where(History.card_id == card_id)
+
+    # 如果没有匹配的历史记录，则返回空列表
+    if not history_items:
+        return ()
+
+    # 构建历史记录列表
+    history_list = []
+    for item in history_items:
+        # 判断收支类型并设置变动符号
+        variation_sign = '+' if item.iae >= 0 else '-'
+        # 构建历史记录字典
+        history_dict = {
+            'date': datetime.fromtimestamp(int(item.time)).strftime('%Y.%m.%d'),
+            'v_sign': variation_sign,
+            'money_value': '{:.2f}'.format(item.iae/100),
+            'variation_type': '储值' if item.iae >= 0 else '消费',
+            'category': item.category,
+            'note': item.note
+        }
+        history_list.append(history_dict)
+
+    if back_sort:
+        history_list = history_list[::-1]
+
+    return tuple(history_list)
 
 
 def check_md5_key(conn: SqliteDatabase,

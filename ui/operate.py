@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QGroupBox, QMe
 from lib.n_qt import (LineEdit, Text, DoubleSpinBox, SpinBox, ComboBox, PushButton, GridLayout,
                       VerticalLine)
 from lib.sql_table import create_tables_model
-from manage.action import phone_search, card_id_search
+from manage.action import phone_search, card_id_search, get_history
 from ui.operate_tip import NoFullPhoneTip
 
 
@@ -112,11 +112,11 @@ class OperateWidget(QWidget):
         self.button_modify.setEnabled(True)
         self.button_addcny.setEnabled(True)
         # 读取历史操作
-        for i in []:  # DEBUG!
+        histories = get_history(self.user_info.card_id, self.conn, True)
+        for i in histories:
+            note = '-' + i['note'] if i['note'] is not None else ''
             self.history.addItem(
-                f'{i.date}\t{i.variation_sign}{i.money_value}CNY ({i.variation_type})\n\t {i.category}-{i.note}'
-            )
-        self.history.addItem('2023.01.28\t-300.00CNY (消费)\n\t 服务1-测试')
+                f"{i['date']}\t{i['v_sign']}{i['money_value']}CNY ({i['variation_type']})\n\t {i['category']}{note}")
 
     def on_exit_button_clicked(self):
 
