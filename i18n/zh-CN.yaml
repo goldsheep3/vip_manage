@@ -44,7 +44,7 @@ MOperate:
   pay4: '实际金额:'
   money_plus: 储值
   money_down: 消费
-  zhe: 折+
+  zhe: 折
 
   # 额外弹窗
   reg:
@@ -57,9 +57,9 @@ MOperate:
   # 错误提示
   errors:
     error: 错误！
-    no_phone: 请输入合法的手机号！
-    wrong_phone: 请输入正确的手机号！
-    not_found_phone: 无此手机号的数据。
+    no_phone: 请输入合法的号码！
+    wrong_phone: 请输入正确的号码！
+    not_found_phone: 无此号码的数据。
     nf_4: 请检查输入是否正确。
     nf_11: 是否要作为新用户注册，或进行临时结算？
 

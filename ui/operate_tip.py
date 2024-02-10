@@ -125,6 +125,7 @@ class RegisterWidget(QDialog):
 
 
 class NoFullPhoneTip(QDialog):
+    # 待修改：整体注册内容添加
     def __init__(self, trans):
         super().__init__()
         self.setWindowTitle(trans['errors']['error'])

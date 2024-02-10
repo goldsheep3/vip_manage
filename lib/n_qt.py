@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QLabel, QLineEdit, QPushButton, QSizePolicy, QRadioButton, QComboBox, QDoubleSpinBox,
-                               QAbstractSpinBox, QGridLayout, QSpinBox)
+                               QAbstractSpinBox, QGridLayout, QSpinBox, QFrame)
 
 
 class GridLayout(QGridLayout):
@@ -108,3 +108,18 @@ class DoubleSpinBox(QDoubleSpinBox):
             self.setButtonSymbols(QAbstractSpinBox.NoButtons)
         if read_only:
             self.setEnabled(False)
+
+
+def VerticalLine():
+    line = QFrame()
+    # noinspection PyUnresolvedReferences
+    line.setFrameShape(QFrame.VLine)
+    return line
+
+
+def HorizontalLine():
+    line = QFrame()
+    # noinspection PyUnresolvedReferences
+    line.setFrameShape(QFrame.HLine)
+    return line
+

@@ -1,12 +1,10 @@
 import argparse
 
 from os.path import join
-from sys import argv, exit
-from PySide6.QtWidgets import QApplication
 
 from lib.read import read_yaml
-from ui.app import MainWindow
 from manage.app import main_app as without_ui
+from ui.app import main_app as with_ui
 
 """
 ██╗   ██╗ ██╗ ██████╗           ███╗   ███╗  █████╗  ███╗   ██╗  █████╗   ██████╗  ███████╗
@@ -16,13 +14,6 @@ from manage.app import main_app as without_ui
  ╚████╔╝  ██║ ██║      ███████╗ ██║ ╚═╝ ██║ ██║  ██║ ██║ ╚████║ ██║  ██║ ╚██████╔╝ ███████╗
   ╚═══╝   ╚═╝ ╚═╝      ╚══════╝ ╚═╝     ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═══╝ ╚═╝  ╚═╝  ╚═════╝  ╚══════╝
 """
-
-
-def with_ui(conf, translation):
-    app = QApplication(argv)
-    window = MainWindow(conf, translation)
-    window.show()
-    exit(app.exec())
 
 
 if __name__ == "__main__":

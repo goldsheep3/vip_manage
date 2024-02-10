@@ -15,11 +15,11 @@ def create_tables_model(conn):
         balance = IntegerField(null=False)
 
     class History(BaseModel):
-        card_id = IntegerField(primary_key=True, unique=True, null=False)
-        time = CharField(null=False)
+        card_id = IntegerField(null=False)
+        time = IntegerField(primary_key=True, unique=True, null=False)
         category = CharField(null=False)
         note = CharField(null=True)
-        i_and_e = IntegerField(null=False)
+        iae = IntegerField(null=False)
         balance = IntegerField(null=False)
 
     class Admin(BaseModel):
